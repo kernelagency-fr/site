@@ -16,7 +16,7 @@
     }catch(e){ renderer = null; }
     if(!renderer || !renderer.getContext()) return null;
 
-    var PR = Math.min(window.devicePixelRatio || 1, 1.8);   /* plafond 1.8 */
+    var PR = Math.min(window.devicePixelRatio || 1, opts.mobile ? 2.6 : 1.8);   /* net sur écrans 3x */
     renderer.setPixelRatio(PR);
     renderer.setSize(window.innerWidth, window.innerHeight);
 

@@ -16,7 +16,7 @@
     }catch(e){ renderer = null; }
     if(!renderer || !renderer.getContext()) return null;
 
-    var PR = Math.min(window.devicePixelRatio || 1, 1.8);   /* plafond 1.8 */
+    var PR = Math.min(window.devicePixelRatio || 1, opts.mobile ? 2.6 : 1.8);   /* net sur écrans 3x */
     renderer.setPixelRatio(PR);
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -34,7 +34,8 @@
       uTime:  {value: 0},
       uMouse: {value: new THREE.Vector3(0,0,1)},
       uIntro: {value: 0},
-      uPR:    {value: PR}
+      uPR:    {value: PR},
+      uMob:   {value: opts.mobile ? 1.18 : 1.0}
     };
 
     /* --- noyau : particules adaptées à l'appareil --- */
@@ -56,7 +57,7 @@
     geo.setAttribute('aSeed', new THREE.BufferAttribute(seed,1));
 
     var vert = [
-      'uniform float uTime; uniform vec3 uMouse; uniform float uIntro; uniform float uPR;',
+      'uniform float uTime; uniform vec3 uMouse; uniform float uIntro; uniform float uPR; uniform float uMob;',
       'attribute float aSeed; varying float vGlow; varying float vSeed;',
       'vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x,289.0);}',
       'vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}',
@@ -94,7 +95,7 @@
       '  vGlow=smoothstep(-0.4,0.9,n1)+push*2.2;',
       '  vec4 mv=modelViewMatrix*vec4(p,1.0);',
       '  gl_Position=projectionMatrix*mv;',
-      '  gl_PointSize=(2.0+aSeed*2.4+vGlow*1.8)*uPR*(4.6/-mv.z);',
+      '  gl_PointSize=(2.0+aSeed*2.4+vGlow*1.8)*uPR*uMob*(4.6/-mv.z);',
       '}'
     ].join('\n');
 

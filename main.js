@@ -83,8 +83,9 @@
   }
 
   /* souris normalisée -1..1, amortie, transmise au hero */
-  var mouseN = {x:0, y:0}, mouseTarget = {x:0, y:0};
+  var mouseN = {x:0, y:0}, mouseTarget = {x:0, y:0}, touchDrive = false;
   document.addEventListener('mousemove', function(e){
+    touchDrive = false;
     mouseTarget.x = (e.clientX/innerWidth)*2 - 1;
     mouseTarget.y = -((e.clientY/innerHeight)*2 - 1);
   }, {passive:true});
@@ -93,6 +94,7 @@
   if(!prefersReduced){
     var heroTouch = function(e){
       var t = e.touches[0]; if(!t) return;
+      touchDrive = true;
       mouseTarget.x = (t.clientX/innerWidth)*2 - 1;
       mouseTarget.y = -((t.clientY/innerHeight)*2 - 1);
     };
@@ -126,8 +128,9 @@
     /* symboles génératifs (offre, méthode, preuve, atmosphère) — même rAF */
     if(window.KernelSymbols && !document.hidden) window.KernelSymbols.tick(performance.now());
     if(!animateHero || !heroVisible || document.hidden) return;
-    mouseN.x += (mouseTarget.x - mouseN.x)*0.05;
-    mouseN.y += (mouseTarget.y - mouseN.y)*0.05;
+    var damp = touchDrive ? 0.16 : 0.05;   /* le doigt attend une réponse immédiate */
+    mouseN.x += (mouseTarget.x - mouseN.x)*damp;
+    mouseN.y += (mouseTarget.y - mouseN.y)*damp;
     hero.setMouse(mouseN.x, mouseN.y);
     hero.tick(clock.getElapsedTime());
   }

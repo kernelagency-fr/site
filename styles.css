@@ -50,7 +50,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
+body{-webkit-tap-highlight-color:transparent;
   background:var(--void);
   color:var(--bone);
   font-family:'Space Grotesk',system-ui,sans-serif;
@@ -91,7 +91,7 @@ body.has-mouse .cursor-dot,body.has-mouse .cursor-ring{opacity:1}
 .overline--dark{color:var(--bio)}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;height:100vh;height:100svh;overflow:hidden}
+.hero{touch-action:pan-y pinch-zoom;position:relative;height:100vh;height:100svh;overflow:hidden}
 #gl{position:absolute;inset:0;display:block;width:100%;height:100%}
 .gl-fallback{
   position:absolute;inset:0;display:none;
@@ -189,8 +189,10 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
 .btn .btn-fill{position:absolute;inset:0;background:var(--bio);border-radius:100px;
   transform:scaleX(0);transform-origin:left;transition:transform .38s cubic-bezier(.65,0,.35,1);z-index:0}
 .btn span:not(.btn-fill){position:relative;z-index:1}
+@media(hover:hover){
 .btn:hover{color:var(--void);border-color:var(--bio);box-shadow:0 0 40px rgba(255,122,89,.35)}
 .btn:hover .btn-fill{transform:scaleX(1)}
+}
 .btn--ghost{border-color:rgba(33,26,56,.18);color:var(--mist)}
 .btn--ghost:hover{color:var(--void);border-color:var(--bio)}
 
@@ -275,9 +277,9 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
     border-bottom:1px solid rgba(33,26,56,.10);
   }
   .offer-stage-sticky{position:static;padding:0}
-  #offerCanvas{aspect-ratio:auto;height:36vh}
-  .offer-stage-label{margin-top:.5rem}
-  .offer-block{min-height:58vh;justify-content:flex-start;padding:2.4rem 0 2rem}
+  #offerCanvas{aspect-ratio:auto;height:21vh}
+  .offer-stage-label{margin-top:.3rem;font-size:.58rem}
+  .offer-block{min-height:52vh;justify-content:flex-start;padding:2.2rem 0 1.8rem}
 }
 
 /* ---------- Méthode ---------- */

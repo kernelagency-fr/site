@@ -18,7 +18,7 @@
 
 var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var mobile  = window.innerWidth < 700;
-var DPR     = Math.min(window.devicePixelRatio || 1, 1.8);
+var DPR     = Math.min(window.devicePixelRatio || 1, window.innerWidth < 900 ? 2.6 : 1.8);
 
 var CORAL = '#FF7A59', LILAC = '#B79CFF';
 
@@ -119,6 +119,7 @@ function initOffer(){
     else if(u < 0.74){ colr[i] = CORAL; alpha[i] = 0.72 + rand()*0.28; } /* dominant */
     else { colr[i] = LILAC; alpha[i] = 0.68 + rand()*0.27; }             /* accent */
     radius[i] = rand() < 0.12 ? 1.7 + rand()*0.9 : 0.8 + rand()*1.0;
+    if(mqBanner.matches) radius[i] *= 0.72;
     stag[i] = rand(); ph[i] = rand()*TAU;
     swA[i] = 0.015 + rand()*0.055; swD[i] = rand() < 0.5 ? -1 : 1;
   }

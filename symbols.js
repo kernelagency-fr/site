@@ -1,6 +1,9 @@
 /* ============================================================
    KERNEL — SYMBOLES GÉNÉRATIFS (l'univers du noyau, après le hero)
-   - Offre : pictogrammes en points corail/lilas, assemblage au reveal
+   - Offre : LE NOYAU QUI SE RÉORGANISE — un seul nuage de particules
+     sticky qui s'assemble à l'entrée de section (nuage -> wireframe)
+     puis morphe entre 3 formations (wireframe de site, écrans d'app
+     reliés, pipeline de flux ⁄03), piloté par le scroll
    - Méthode : filament de particules reliant les 4 étapes (nœuds ancrés)
    - Atmosphère : poussière du noyau en dérive lente sur les fonds clairs
    - Preuve : orbite elliptique esquissée autour du méta (écho glyphe IA)
@@ -29,13 +32,18 @@ if(window.matchMedia('(hover:hover)').matches && !reduced){
   }, {passive:true});
 }
 
-/* version de géométrie : les rects sont mis en cache hors boucle rAF
-   et invalidés seulement quand le viewport bouge réellement */
-var geomV = 1;
+/* versions de géométrie : les rects sont mis en cache hors boucle rAF.
+   geomV (scroll + resize) invalide les rects en coordonnées viewport ;
+   resizeV (resize + polices) invalide les positions en coordonnées
+   document, invariantes au scroll — pas de layout forcé en scrollant. */
+var geomV = 1, resizeV = 1;
 if(!reduced){
   window.addEventListener('scroll', function(){ geomV++; }, {passive:true});
-  window.addEventListener('resize', function(){ geomV++; }, {passive:true});
+  window.addEventListener('resize', function(){ geomV++; resizeV++; }, {passive:true});
 }
+
+/* breakpoint partagé avec styles.css (bandeau mobile de l'Offre) */
+var mqBanner = window.matchMedia('(max-width:860px)');
 
 /* mulberry32 : formes déterministes, identiques à chaque visite */
 function rng(seed){
@@ -60,157 +68,428 @@ function setSize(c, w, h){
 }
 
 /* ============================================================
-   1. PICTOGRAMMES D'OFFRE — signature en bas de carte (140px)
-      Points : 2 rayons quantifiés, corail dominant + lilas ~15 %
+   1. LE NOYAU QUI SE RÉORGANISE — pièce maîtresse de l'Offre
+      Un seul nuage (3000 pts desktop / 1200 mobile) qui morphe
+      entre 3 formations selon le bloc de service actif :
+      ⁄01 wireframe de page web  ⁄02 écrans d'app reliés  ⁄03 LE FLUX
+      (pipeline gauche -> droite : entrées éparses, cœur dense, rails)
+      Scroll -> cible continue f∈[0..3] (0 = nuage d'entrée), amortie,
+      appariement des particules par proximité pour garder une
+      silhouette pendant le morph, respiration au repos.
+      reduced-motion : saut d'état, dessin statique de la formation active.
    ============================================================ */
-function initGlyph(card, kind, seed){
-  var CS = 140;                 /* canvas : la signature de la carte */
-  var O  = 32;                  /* décalage : formes définies en espace 0..76 */
-  var C  = 38;                  /* centre des formes */
-  var SC = 1.7;                 /* agrandissement autour du centre */
-  var TILT = -0.5;              /* inclinaison des orbites du mini-noyau */
-  var R_S = 1.5, R_L = 2.1;     /* les 2 seuls rayons de points */
+function initOffer(){
+  var section = document.getElementById('offre');
+  var canvas  = document.getElementById('offerCanvas');
+  var labelEl = document.getElementById('offerLabel');
+  if(!section || !canvas || !labelEl) return;
+  var blocks = [].slice.call(section.querySelectorAll('.offer-block'));
+  if(blocks.length < 3) return;
 
-  var canvas = makeCanvas('glyph');
-  card.appendChild(canvas);
-  setSize(canvas, CS, CS);
   var ctx = canvas.getContext('2d');
-  var rand = rng(seed);
+  var rand = rng(9001);
+  var N = mqBanner.matches ? 1200 : 3000;   /* même seuil que le CSS */
+  var INK = '#211A38';
+  var TAU = Math.PI*2;
+  var LABELS = ['⁄01 — SITES WEB', '⁄02 — APPLICATIONS', '⁄03 — AUTOMATISATIONS IA'];
 
-  function P(x, y, o){
-    o = o || {};
-    return {
-      x:x, y:y,
-      r: o.r || (rand() < 0.7 ? R_S : R_L),
-      c: o.c || (rand() < 0.85 ? CORAL : LILAC),
-      seed: rand(),
-      ph: rand()*Math.PI*2,
-      wf: 0.55 + rand()*0.85,
-      sx: C + Math.cos(rand()*Math.PI*2)*(26 + rand()*30),
-      sy: C + Math.sin(rand()*Math.PI*2)*(26 + rand()*30),
-      orbit: o.orbit || null
-    };
+  /* ---- identité fixe de chaque particule ---- */
+  var colr = new Array(N);
+  var radius = new Float32Array(N), alpha = new Float32Array(N),
+      stag = new Float32Array(N), ph = new Float32Array(N),
+      swA = new Float32Array(N), swD = new Float32Array(N);
+  for(var i=0;i<N;i++){
+    var u = rand();
+    if(u < 0.10){ colr[i] = INK;   alpha[i] = 0.40 + rand()*0.18; }      /* profondeur */
+    else if(u < 0.74){ colr[i] = CORAL; alpha[i] = 0.72 + rand()*0.28; } /* dominant */
+    else { colr[i] = LILAC; alpha[i] = 0.68 + rand()*0.27; }             /* accent */
+    radius[i] = rand() < 0.12 ? 1.7 + rand()*0.9 : 0.8 + rand()*1.0;
+    stag[i] = rand(); ph[i] = rand()*TAU;
+    swA[i] = 0.015 + rand()*0.055; swD[i] = rand() < 0.5 ? -1 : 1;
   }
-  function rect(x0,y0,x1,y1,n,out){
-    var per = 2*((x1-x0)+(y1-y0));
+
+  /* ---- constructeurs de formations (espace normalisé 0..1) ---- */
+  function nn(fr){ return Math.max(1, Math.round(N*fr)); }
+  function seg(p,x0,y0,x1,y1,n,j){
+    for(var i=0;i<n;i++){
+      var u = n === 1 ? 0.5 : i/(n-1);
+      p.push({x:x0+(x1-x0)*u+(rand()-0.5)*j, y:y0+(y1-y0)*u+(rand()-0.5)*j});
+    }
+  }
+  function cluster(p,cx,cy,r,n){
+    for(var i=0;i<n;i++){
+      var a = rand()*TAU, rr = Math.sqrt(rand())*r;
+      p.push({x:cx+Math.cos(a)*rr, y:cy+Math.sin(a)*rr});
+    }
+  }
+  function rectO(p,x0,y0,x1,y1,n,j){
+    var w = x1-x0, h = y1-y0, per = 2*(w+h);
     for(var i=0;i<n;i++){
       var d = (i/n)*per, x, y;
-      if(d < (x1-x0)){ x = x0+d; y = y0; }
-      else if(d < (x1-x0)+(y1-y0)){ x = x1; y = y0 + (d-(x1-x0)); }
-      else if(d < 2*(x1-x0)+(y1-y0)){ x = x1-(d-(x1-x0)-(y1-y0)); y = y1; }
-      else { x = x0; y = y1-(d-2*(x1-x0)-(y1-y0)); }
-      out.push(P(x,y));
+      if(d < w){ x = x0+d; y = y0; }
+      else if(d < w+h){ x = x1; y = y0+(d-w); }
+      else if(d < 2*w+h){ x = x1-(d-w-h); y = y1; }
+      else { x = x0; y = y1-(d-2*w-h); }
+      p.push({x:x+(rand()-0.5)*j, y:y+(rand()-0.5)*j});
     }
   }
-  function row(x0,x1,y,n,out){
-    for(var i=0;i<n;i++) out.push(P(x0+(x1-x0)*(n===1?0:i/(n-1)), y));
+  /* périmètre d'un rectangle arrondi, échantillonné par longueur d'arc */
+  function rrect(p,cx,cy,w,h,r,n,j){
+    var sw = w-2*r, sh = h-2*r, q = Math.PI/2*r, per = 2*(sw+sh)+4*q;
+    for(var i=0;i<n;i++){
+      var d = (i/n)*per, x, y, a;
+      if(d < sw){ x = -sw/2+d; y = -h/2; }
+      else if((d -= sw) < q){ a = -Math.PI/2+d/r; x = sw/2+Math.cos(a)*r; y = -sh/2+Math.sin(a)*r; }
+      else if((d -= q) < sh){ x = w/2; y = -sh/2+d; }
+      else if((d -= sh) < q){ a = d/r; x = sw/2+Math.cos(a)*r; y = sh/2+Math.sin(a)*r; }
+      else if((d -= q) < sw){ x = sw/2-d; y = h/2; }
+      else if((d -= sw) < q){ a = Math.PI/2+d/r; x = -sw/2+Math.cos(a)*r; y = sh/2+Math.sin(a)*r; }
+      else if((d -= q) < sh){ x = -w/2; y = sh/2-d; }
+      else { a = Math.PI+(d-sh)/r; x = -sw/2+Math.cos(a)*r; y = -sh/2+Math.sin(a)*r; }
+      p.push({x:cx+x+(rand()-0.5)*j, y:cy+y+(rand()-0.5)*j});
+    }
   }
-  function build(){
-    var o = [];
-    if(kind === 'site'){
-      /* cadre de navigateur / viewport */
-      rect(10,16,66,60,30,o);
-      row(14,62,27,8,o);                          /* barre d'outils */
-      o.push(P(16,21.5,{c:CORAL, r:R_L}));        /* pastilles fenêtre */
-      o.push(P(21.5,21.5,{c:LILAC, r:R_S}));
-      o.push(P(27,21.5,{c:CORAL, r:R_S}));
-      row(17,49,38,5,o); row(17,41,46,4,o);       /* contenu esquissé */
-    } else if(kind === 'app'){
-      /* blocs imbriqués */
-      rect(12,12,46,46,22,o);
-      rect(30,30,64,64,22,o);
-      o.push(P(35,35)); o.push(P(41,35));          /* jonction des blocs */
-      o.push(P(35,41)); o.push(P(41,41));
-    } else {
-      /* mini-noyau lisible : distance minimale entre points du cœur */
-      var placed = [], tries = 0;
-      while(placed.length < 12 && tries < 600){
-        tries++;
-        var a = rand()*Math.PI*2, rr = Math.pow(rand(),0.6)*5;
-        var px = C + Math.cos(a)*rr, py = C + Math.sin(a)*rr, ok = true;
-        for(var j=0;j<placed.length;j++){
-          var ddx = px - placed[j].x, ddy = py - placed[j].y;
-          if(ddx*ddx + ddy*ddy < 10.5){ ok = false; break; }
-        }
-        if(ok) placed.push({x:px, y:py});
+  function fit(p){
+    /* complète jusqu'à N (densité en double des traits) */
+    while(p.length < N){
+      var s = p[(rand()*p.length)|0];
+      if(s.fl){
+        var q = {x0:s.fl.x0, y0:clamp01(s.fl.y0+(rand()-0.5)*0.06),
+                 yc:s.fl.yc, yr:s.fl.yr, u0:(s.fl.u0+rand())%1,
+                 sp:s.fl.sp, ph:rand()*TAU};
+        var d = {fl:q, x:0, y:0};
+        flowPos(q, q.u0, 0, d);
+        p.push(d);
+      } else {
+        p.push({x:s.x+(rand()-0.5)*0.008, y:s.y+(rand()-0.5)*0.008});
       }
-      placed.forEach(function(q){ o.push(P(q.x, q.y)); });
-      /* points en orbite (rotation lente continue) */
-      var rings = [{r:16,t:0.55,n:4,s:0.5},{r:26,t:0.42,n:7,s:-0.3}];
-      rings.forEach(function(g, gi){
-        for(var k=0;k<g.n;k++)
-          o.push(P(C, C, {r: rand() < 0.7 ? R_S : R_L,
-            orbit:{r:g.r, tilt:g.t, speed:g.s, a0:(k/g.n)*Math.PI*2 + gi}}));
-      });
     }
-    return o;
+    p.length = N;
+    /* appariement par proximité : tri par secteur angulaire puis rayon.
+       Les indices se correspondent par rang spatial entre formations :
+       chaque particule voyage vers une cible voisine et la silhouette
+       persiste pendant tout le morph (fini le nuage informe). */
+    for(var k=0;k<N;k++){
+      var s2 = p[k], dx = s2.x-0.5, dy = s2.y-0.5;
+      s2.sk = ((Math.atan2(dy,dx)+Math.PI)/TAU*24)|0;
+      s2.sr = dx*dx+dy*dy;
+    }
+    p.sort(function(a,b){ return (a.sk-b.sk) || (a.sr-b.sr); });
+    return p;
   }
 
-  var pts = build();
-  var revealAt = -1, visible = false;
-  var mrect = null, mrectV = -1;
+  /* ⁄01 — wireframe de page web reconnaissable */
+  function buildSite(){
+    var p = [];
+    rectO(p, 0.06,0.10, 0.94,0.90, nn(0.185), 0.004);          /* viewport */
+    [[0.06,0.10],[0.94,0.10],[0.06,0.90],[0.94,0.90]].forEach(function(c){
+      cluster(p, c[0], c[1], 0.013, nn(0.012));                /* prise aux angles */
+    });
+    seg(p, 0.06,0.21, 0.94,0.21, nn(0.055), 0.004);            /* barre d'en-tête */
+    cluster(p, 0.105,0.155, 0.009, nn(0.012));                 /* 3 pastilles */
+    cluster(p, 0.145,0.155, 0.009, nn(0.012));
+    cluster(p, 0.185,0.155, 0.009, nn(0.012));
+    rectO(p, 0.12,0.28, 0.88,0.50, nn(0.125), 0.004);          /* bloc hero */
+    [[0.12,0.28],[0.88,0.28],[0.12,0.50],[0.88,0.50]].forEach(function(c){
+      cluster(p, c[0], c[1], 0.011, nn(0.008));
+    });
+    seg(p, 0.18,0.365, 0.62,0.365, nn(0.035), 0.006);          /* titre esquissé */
+    seg(p, 0.18,0.415, 0.50,0.415, nn(0.025), 0.006);
+    var rows = [0.58,0.645,0.71,0.775,0.84];                   /* 2 colonnes de contenu */
+    for(var r=0;r<rows.length;r++){
+      seg(p, 0.12,rows[r], 0.46,rows[r], nn(0.030), 0.005);
+      seg(p, 0.54,rows[r], 0.88,rows[r], nn(0.030), 0.005);
+    }
+    return fit(p);
+  }
 
-  function draw(t){
+  /* ⁄02 — 3 écrans d'app reliés : codes UI (barre de titre + pastilles,
+     rangées de liste) pour une lecture immédiate « application » */
+  function buildApp(){
+    var p = [];
+    rrect(p, 0.28,0.24, 0.36,0.22, 0.05, nn(0.14), 0.004);
+    rrect(p, 0.74,0.40, 0.32,0.20, 0.05, nn(0.12), 0.004);
+    rrect(p, 0.46,0.75, 0.40,0.24, 0.06, nn(0.15), 0.004);
+    seg(p, 0.46,0.28,  0.585,0.355, nn(0.045), 0.006);         /* liens */
+    seg(p, 0.685,0.50, 0.565,0.655, nn(0.045), 0.006);
+    seg(p, 0.295,0.35, 0.42,0.645,  nn(0.045), 0.006);
+    [[0.46,0.28],[0.585,0.355],[0.685,0.50],[0.565,0.655],[0.295,0.35],[0.42,0.645]]
+      .forEach(function(c){ cluster(p, c[0], c[1], 0.015, nn(0.016)); }); /* jonctions */
+    seg(p, 0.10,0.185, 0.46,0.185, nn(0.030), 0.004);          /* barre de titre */
+    cluster(p, 0.125,0.158, 0.0075, nn(0.008));                /* 3 pastilles (écho ⁄01) */
+    cluster(p, 0.152,0.158, 0.0075, nn(0.008));
+    cluster(p, 0.179,0.158, 0.0075, nn(0.008));
+    seg(p, 0.14,0.23, 0.40,0.23, nn(0.011), 0.005);            /* contenu esquissé */
+    seg(p, 0.14,0.28, 0.32,0.28, nn(0.009), 0.005);
+    seg(p, 0.63,0.38, 0.83,0.38, nn(0.010), 0.005);
+    var rows = [0.675,0.72,0.765,0.81];                        /* rangées de liste */
+    for(var r=0;r<rows.length;r++){
+      cluster(p, 0.295, rows[r], 0.006, nn(0.004));            /* puce de rangée */
+      seg(p, 0.325,rows[r], 0.615-(r%2)*0.06, rows[r], nn(0.013), 0.004);
+    }
+    return fit(p);
+  }
+
+  /* ⁄0 — nuage d'entrée : l'écho du hero, avant que le noyau s'organise */
+  function buildCloud(){
+    var p = [], i, a, rr;
+    for(i=0;i<N;i++){
+      a = rand()*TAU; rr = Math.pow(rand(), 0.52)*0.46;
+      p.push({x:0.5+Math.cos(a)*rr, y:0.5+Math.sin(a)*rr*0.94});
+    }
+    return fit(p);
+  }
+
+  /* ⁄03 — LE FLUX : pipeline gauche -> droite, lisible au premier regard.
+     À gauche des entrées éparses en désordre qui convergent, au centre
+     le cœur corail dense qu'elles traversent, à droite 4 rails de sortie
+     réguliers (registre machine). Circulation permanente, même au repos. */
+  var RAILS = [0.335, 0.445, 0.555, 0.665];
+  var CORE_L = 0.435, CORE_R = 0.565;
+  function flowPos(q, u, t, out){
+    var x, y, v;
+    if(u < 0.42){                       /* convergence : désordre -> cœur */
+      v = u/0.42;
+      var sv = v*v*(3-2*v);
+      x = q.x0 + (CORE_L - q.x0)*v;
+      y = q.y0 + (q.yc - q.y0)*sv;
+      var dis = (1-v)*(1-v);            /* agitation qui s'éteint en approche */
+      x += Math.sin(t*1.3 + q.ph)*0.018*dis;
+      y += Math.cos(t*1.7 + q.ph*1.4)*0.030*dis;
+    } else if(u < 0.58){                /* traversée du cœur */
+      v = (u-0.42)/0.16;
+      x = CORE_L + (CORE_R-CORE_L)*v;
+      y = 0.5 + (q.yc-0.5)*(1 - 0.55*Math.sin(v*Math.PI));
+    } else {                            /* rails de sortie : propres, droits */
+      v = (u-0.58)/0.42;
+      x = CORE_R + (0.97-CORE_R)*v;
+      var av = Math.min(1, v/0.32);
+      av = av*av*(3-2*av);
+      y = q.yc + (q.yr - q.yc)*av;
+    }
+    out.x = x; out.y = y;
+  }
+  function buildFlux(){
+    var p = [], i, n, a, rr;
+    n = nn(0.30);                       /* cœur corail dense */
+    for(i=0;i<n;i++){
+      a = rand()*TAU; rr = Math.pow(rand(), 0.65)*0.085;
+      p.push({x:0.5+Math.cos(a)*rr, y:0.5+Math.sin(a)*rr*0.92});
+    }
+    n = nn(0.64);                       /* particules en circulation */
+    for(i=0;i<n;i++){
+      var q = {
+        x0: 0.02 + rand()*0.15,         /* entrées dispersées à gauche */
+        y0: 0.08 + rand()*0.84,
+        yc: 0.5 + (rand()-0.5)*0.11,    /* couloir de traversée du cœur */
+        yr: RAILS[(rand()*RAILS.length)|0] + (rand()-0.5)*0.006,
+        u0: rand(),
+        sp: 0.06 + rand()*0.05,         /* 9 à 18 s par traversée */
+        ph: rand()*TAU
+      };
+      var s = {fl:q, x:0, y:0};
+      flowPos(q, q.u0, 0, s);           /* position de référence pour le tri */
+      p.push(s);
+    }
+    n = nn(0.05);                       /* fine poussière autour du cœur */
+    for(i=0;i<n;i++){
+      a = rand()*TAU; rr = 0.10 + rand()*0.10;
+      p.push({x:0.5+Math.cos(a)*rr, y:0.5+Math.sin(a)*rr*0.9});
+    }
+    return fit(p);
+  }
+
+  var F = [buildCloud(), buildSite(), buildApp(), buildFlux()];
+
+  /* position d'un slot (les particules du flux ⁄03 circulent avec le temps) */
+  var A = {x:0, y:0}, B = {x:0, y:0};
+  function slotPos(k, i, t, out){
+    var s = F[k][i];
+    if(s.fl){
+      var u = (s.fl.u0 + t*s.fl.sp) % 1;
+      if(u < 0) u += 1;
+      flowPos(s.fl, u, t, out);
+    } else { out.x = s.x; out.y = s.y; }
+  }
+
+  /* ---- canvas carré (letterbox si le conteneur ne l'est pas) ---- */
+  var W = 0, H = 0, S = 1, offX = 0, offY = 0;
+  function layout(){
+    canvas.style.width = ''; canvas.style.height = '';
+    W = canvas.clientWidth || 300;
+    H = canvas.clientHeight || W;
+    setSize(canvas, W, H);
+    S = Math.min(W, H); offX = (W-S)/2; offY = (H-S)/2;
+  }
+  function X(x){ return offX + x*S; }
+  function Y(y){ return offY + y*S; }
+
+  /* ---- cible de formation liée au scroll ----
+     f ∈ [0..3] : 0 nuage -> 1 site -> 2 app -> 3 flux.
+     Le nuage s'assemble en wireframe sur les premiers ~40vh de la
+     section (raccord narratif hero -> offre), puis plateaux aux centres
+     de blocs avec des transitions resserrées (30 % du parcours). */
+  var centers = [0,0,0], secTop = 0, cV = -1, anchor = 0.5;
+  function computeTarget(){
+    if(cV !== resizeV){
+      anchor = mqBanner.matches ? 0.66 : 0.5;  /* mobile : texte sous le bandeau */
+      secTop = section.getBoundingClientRect().top + window.scrollY;
+      for(var k=0;k<3;k++){
+        var r = blocks[k].getBoundingClientRect();
+        centers[k] = r.top + window.scrollY + r.height*0.5;
+      }
+      cV = resizeV;
+    }
+    var vc = window.scrollY + window.innerHeight*anchor;
+    var az = Math.max(1, Math.min(window.innerHeight*0.4, centers[0]-secTop));
+    var f = clamp01((vc - secTop)/az);
+    for(var k2=1;k2<3;k2++){
+      var u = (vc - centers[k2-1]) / Math.max(1, centers[k2]-centers[k2-1]);
+      f += clamp01((u-0.35)/0.30);
+    }
+    return f;
+  }
+
+  /* ---- filets hairline structurels (l'assise de la lisibilité) ----
+     k = indice de formation : 0 nuage (rien), 1 site, 2 app, 3 flux */
+  function scaffold(k, aVis, tt){
+    if(k === 0 || aVis <= 0.02) return;
+    ctx.lineWidth = 0.8;
+    ctx.strokeStyle = 'rgba(33,26,56,' + (0.14*aVis).toFixed(3) + ')';
+    ctx.beginPath();
+    if(k === 1){
+      ctx.rect(X(0.06), Y(0.10), 0.88*S, 0.80*S);
+      ctx.moveTo(X(0.06), Y(0.21)); ctx.lineTo(X(0.94), Y(0.21));
+      ctx.rect(X(0.12), Y(0.28), 0.76*S, 0.22*S);
+    } else if(k === 2){
+      if(ctx.roundRect){                /* contours des 3 écrans */
+        ctx.roundRect(X(0.10), Y(0.13), 0.36*S, 0.22*S, 0.05*S);
+        ctx.roundRect(X(0.58), Y(0.30), 0.32*S, 0.20*S, 0.05*S);
+        ctx.roundRect(X(0.26), Y(0.63), 0.40*S, 0.24*S, 0.06*S);
+      }
+      ctx.moveTo(X(0.10), Y(0.185));  ctx.lineTo(X(0.46), Y(0.185));
+      ctx.moveTo(X(0.46), Y(0.28));  ctx.lineTo(X(0.585), Y(0.355));
+      ctx.moveTo(X(0.685), Y(0.50)); ctx.lineTo(X(0.565), Y(0.655));
+      ctx.moveTo(X(0.295), Y(0.35)); ctx.lineTo(X(0.42), Y(0.645));
+    } else {
+      /* lignes d'entrée esquissées, convergentes vers le cœur */
+      [[0.03,0.14,0.475],[0.02,0.40,0.49],[0.05,0.63,0.51],[0.03,0.87,0.53]]
+        .forEach(function(e2){
+          ctx.moveTo(X(e2[0]), Y(e2[1])); ctx.lineTo(X(0.425), Y(e2[2]));
+        });
+      ctx.moveTo(X(0.5) + 0.105*S, Y(0.5));                    /* le cœur */
+      ctx.ellipse(X(0.5), Y(0.5), 0.105*S, 0.10*S, 0, 0, TAU);
+      for(var ri=0;ri<RAILS.length;ri++){                      /* rails de sortie */
+        ctx.moveTo(X(0.60), Y(RAILS[ri])); ctx.lineTo(X(0.965), Y(RAILS[ri]));
+      }
+    }
+    ctx.stroke();
+  }
+
+  /* ---- dessin ---- */
+  var f = 0, lastT = -1, curLabel = -1;
+  var mrect = null, mrectV = -1;
+  function draw(t, statik){
+    var dt = lastT < 0 ? 0.016 : Math.min(0.05, Math.max(0.001, t-lastT));
+    lastT = t;
+    var tf = computeTarget();
+    if(statik) f = Math.max(1, Math.round(tf));  /* jamais le nuage en statique */
+    else f += (tf - f)*Math.min(1, dt*3.8);      /* ~1s de voyage */
+    if(f < 0) f = 0; if(f > 3) f = 3;
+    var k0 = Math.min(2, Math.floor(f));
+    var e = clamp01(f - k0);
+
+    /* étiquette : pluriels alignés sur les h3, crossfade court au lieu
+       du dimming long — lisible pendant l'essentiel de la transition */
+    var near = Math.round(f);
+    var li = Math.max(0, near-1);
+    if(li !== curLabel){ curLabel = li; labelEl.textContent = LABELS[li]; }
+    var dn = Math.abs(f - near);
+    var lop = dn < 0.35 ? 1 : Math.max(0, 1 - (dn-0.35)/0.13);
+    labelEl.style.opacity = (lop*clamp01((f-0.15)/0.7)).toFixed(3);
+
     ctx.setTransform(DPR,0,0,DPR,0,0);
-    ctx.clearRect(0,0,CS,CS);
-    if(revealAt < 0) return;
-    ctx.translate(O,O);
+    ctx.clearRect(0,0,W,H);
+    var tt = statik ? 2.1 : t;
+    scaffold(k0, 1-e, tt);
+    /* plancher d'alpha (0.35) + rampe : la forme cible se devine dès le
+       départ et reste lisible au cœur du transit, sans saut au plateau */
+    if(e > 0.02) scaffold(k0+1, Math.min(1, 0.35 + e), tt);
+
+    var breath = statik ? 0 : Math.sin(t*0.55)*0.011;
     var mr = null;
-    if(mouse.x > -9000){
+    if(!statik && mouse.x > -9000){
       if(mrectV !== geomV){ mrect = canvas.getBoundingClientRect(); mrectV = geomV; }
       mr = mrect;
     }
-    if(kind === 'ia'){
-      /* orbites esquissées, filet très pâle */
-      ctx.strokeStyle = 'rgba(33,26,56,0.10)';
-      ctx.lineWidth = 0.7;
-      [{r:16,t:0.55},{r:26,t:0.42}].forEach(function(g){
-        ctx.beginPath();
-        ctx.ellipse(C, C, g.r*SC, g.r*g.t*SC, TILT, 0, Math.PI*2);
-        ctx.stroke();
-      });
-    }
-    for(var i=0;i<pts.length;i++){
-      var p = pts[i];
-      var u = reduced ? 1 : easeOut((t - revealAt - p.seed*0.55)/0.85);
-      if(u <= 0) continue;
-      var tx = p.x, ty = p.y;
-      if(p.orbit){
-        var a = p.orbit.a0 + (reduced ? 2.1 : t)*p.orbit.speed;
-        var ex = Math.cos(a)*p.orbit.r, ey = Math.sin(a)*p.orbit.r*p.orbit.tilt;
-        tx = C + ex*Math.cos(TILT) - ey*Math.sin(TILT);
-        ty = C + ex*Math.sin(TILT) + ey*Math.cos(TILT);
-      } else if(u >= 1 && !reduced){
-        /* vie lente : dérive subtile autour de la position d'ancrage */
-        tx += Math.sin(t*p.wf + p.ph)*0.38;
-        ty += Math.cos(t*p.wf*0.9 + p.ph)*0.38;
-      }
-      var x = p.sx + (tx - p.sx)*u, y = p.sy + (ty - p.sy)*u;
-      /* agrandissement centré sur la forme */
-      x = C + (x - C)*SC; y = C + (y - C)*SC;
-      if(mr){
-        var dx = x + O - (mouse.x - mr.left), dy = y + O - (mouse.y - mr.top);
-        var d2 = dx*dx + dy*dy;
-        if(d2 < 4900 && d2 > 0.01){
-          var d = Math.sqrt(d2), f = (1 - d/70)*5;
-          x += dx/d*f; y += dy/d*f;
+    for(var i=0;i<N;i++){
+      slotPos(k0, i, tt, A);
+      var x, y;
+      if(e <= 0.0001){ x = A.x; y = A.y; }
+      else {
+        slotPos(k0+1, i, tt, B);
+        /* départ par vagues : à mi-transition une partie des points est déjà
+           arrivée, une partie n'est pas partie — la silhouette persiste */
+        var ei = clamp01((e - stag[i]*0.55)/0.45);
+        ei = ei*ei*(3-2*ei);
+        x = A.x + (B.x-A.x)*ei; y = A.y + (B.y-A.y)*ei;
+        var s = Math.sin(ei*Math.PI);
+        if(s > 0.001 && !statik){
+          /* tourbillon : arc perpendiculaire + bruit pendant le transit */
+          var dx = B.x-A.x, dy = B.y-A.y;
+          var len = Math.sqrt(dx*dx+dy*dy) + 1e-4;
+          var pxn = -dy/len, pyn = dx/len;
+          var wob = Math.sin(tt*2.1 + ph[i])*0.010;
+          var k = (swA[i]*swD[i] + wob)*s*(0.4+len);
+          x += pxn*k; y += pyn*k;
         }
       }
-      ctx.globalAlpha = 0.92*u;
-      ctx.fillStyle = p.c;
-      ctx.beginPath(); ctx.arc(x, y, p.r, 0, Math.PI*2); ctx.fill();
+      if(!statik){
+        /* respiration lente + vie subtile au repos */
+        x += Math.sin(tt*(0.6+stag[i]) + ph[i])*0.0022;
+        y += Math.cos(tt*(0.5+stag[i]*0.7) + ph[i])*0.0022;
+        x = 0.5 + (x-0.5)*(1+breath);
+        y = 0.5 + (y-0.5)*(1+breath);
+      }
+      var px = offX + x*S, py = offY + y*S;
+      if(mr){
+        var mdx = px - (mouse.x - mr.left), mdy = py - (mouse.y - mr.top);
+        var d2 = mdx*mdx + mdy*mdy;
+        if(d2 < 6400 && d2 > 0.01){
+          var d = Math.sqrt(d2), fo = (1 - d/80)*9;
+          px += mdx/d*fo; py += mdy/d*fo;
+        }
+      }
+      ctx.globalAlpha = alpha[i];
+      ctx.fillStyle = colr[i];
+      ctx.beginPath(); ctx.arc(px, py, radius[i], 0, TAU); ctx.fill();
     }
     ctx.globalAlpha = 1;
   }
 
-  if(reduced){ revealAt = 0; draw(0); return; }
+  layout();
+  window.addEventListener('resize', function(){
+    layout();
+    if(reduced){ geomV++; resizeV++; draw(2.1, true); }
+  });
+  if(document.fonts && document.fonts.ready)
+    document.fonts.ready.then(function(){ geomV++; resizeV++; layout(); if(reduced) draw(2.1, true); });
 
-  var io = new IntersectionObserver(function(en){
-    visible = en[0].isIntersecting;
-    if(visible && revealAt < 0) revealAt = performance.now()/1000;
-  }, {threshold:0.2});
-  io.observe(card);
-  units.push({tick:function(t){ if(visible) draw(t); }});
+  if(reduced){
+    /* saut d'état : formation du bloc visible, dessinée statiquement */
+    draw(2.1, true);
+    var queued = false;
+    var redraw = function(){ queued = false; draw(2.1, true); };
+    window.addEventListener('scroll', function(){
+      if(!queued){ queued = true; requestAnimationFrame(redraw); }
+    }, {passive:true});
+    return;
+  }
+
+  var visible = false;
+  new IntersectionObserver(function(en){ visible = en[0].isIntersecting; })
+    .observe(section);
+  units.push({tick:function(t){ if(visible) draw(t, false); }});
 }
 
 /* ============================================================
@@ -617,11 +896,7 @@ function initContact(){
 /* ============================================================
    Initialisation + API pour la boucle rAF de main.js
    ============================================================ */
-var cards = document.querySelectorAll('.offer-card');
-var kinds = ['site', 'app', 'ia'];
-Array.prototype.forEach.call(cards, function(card, i){
-  initGlyph(card, kinds[i] || 'ia', 11 + i*17);
-});
+initOffer();
 initFilament();
 initConstellation();
 initContact();

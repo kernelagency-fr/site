@@ -215,37 +215,70 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
 .hero-meta .dot,.proof-meta .dot,footer .dot{color:var(--bio)}
 @media(max-width:700px){.hero-meta{display:none}}
 
-/* ---------- Offre ---------- */
-.offer{position:relative;padding:clamp(6rem,12vw,10rem) clamp(1.5rem,4vw,3.5rem);
-  max-width:1280px;margin:0 auto}
-.offer-head{margin-bottom:clamp(3rem,6vw,5rem)}
+/* ---------- Offre — éditorial pur + noyau morphant ---------- */
+.offer{position:relative;padding:clamp(6rem,12vw,9rem) clamp(1.5rem,4vw,3.5rem) clamp(2rem,5vw,4rem);
+  max-width:1380px;margin:0 auto}
+.offer-head{margin-bottom:clamp(2.5rem,5vw,4.5rem)}
 .offer-title{font-size:clamp(1.9rem,5vw,3.6rem);font-weight:700;line-height:1.08;
   max-width:20ch}
 .offer-title em,.method-title em,.contact-title em{font-style:normal;color:var(--bio-ink)}
 
-.offer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
-@media(max-width:860px){.offer-grid{grid-template-columns:1fr}}
-.offer-card{
-  background:var(--abyss);position:relative;
-  padding:2.8rem 2.4rem calc(3.4rem + 140px);   /* le glyphe signe le bas de carte */
-  border:1px solid rgba(33,26,56,.08);
-  box-shadow:0 14px 34px -28px rgba(33,26,56,.20);
-  transition:background .4s ease,transform .4s ease,box-shadow .4s ease;overflow:hidden;
+/* deux colonnes : le texte défile, le noyau reste */
+.offer-layout{display:grid;grid-template-columns:minmax(0,1fr) min(44vw,600px);
+  column-gap:clamp(2.5rem,6vw,6rem)}
+.offer-flow{grid-column:1;grid-row:1}
+.offer-stage{grid-column:2;grid-row:1;position:relative}
+.offer-stage-sticky{position:sticky;top:calc(50vh - min(22vw,300px) - 2.6rem);padding:.5rem 0}
+#offerCanvas{display:block;width:100%;aspect-ratio:1/1}
+.offer-stage-label{
+  margin-top:.9rem;text-align:center;
+  font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.3em;
+  color:var(--bio-ink);text-transform:uppercase;transition:opacity .2s ease;
 }
-.offer-card::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(60% 50% at 50% 0%,rgba(255,122,89,.14),transparent 70%);
-  opacity:0;transition:opacity .4s ease}
-.offer-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(33,26,56,.25)}
-.offer-card:hover::before{opacity:1}
-.offer-num{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--bio-ink);
-  letter-spacing:.2em;margin-bottom:2.6rem;display:block}
-.offer-card h3{font-size:1.42rem;font-weight:700;margin-bottom:1rem;letter-spacing:.01em}
-.offer-card p{font-size:.92rem;line-height:1.7;color:var(--mist)}
-.offer-card p strong{color:var(--bone);font-weight:600}
-.offer-card .card-line{position:absolute;left:0;top:0;width:100%;height:2px;
-  background:var(--bio);transform:scaleX(0);transform-origin:left;
-  transition:transform .5s cubic-bezier(.65,0,.35,1)}
-.offer-card:hover .card-line{transform:scaleX(1)}
+
+/* blocs de service : typographie éditoriale, filets hairline, zéro boîte */
+.offer-block{
+  position:relative;min-height:65vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(2.5rem,5vh,4rem) 0;
+  border-top:1px solid rgba(33,26,56,.12);
+}
+.offer-block::before{content:'';position:absolute;top:-1px;left:0;width:3.4rem;height:1px;
+  background:var(--bio)}
+.offer-num{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--bio-ink);
+  letter-spacing:.24em;display:block;margin-bottom:1.7rem}
+.offer-block h3{
+  font-size:clamp(2.4rem,4.8vw,4rem);font-weight:700;line-height:1.02;
+  letter-spacing:-.015em;margin-bottom:1.7rem;
+}
+.offer-block p{font-size:clamp(.95rem,1.25vw,1.08rem);line-height:1.78;color:var(--mist);
+  max-width:42ch}
+.offer-block p strong{color:var(--bone);font-weight:600}
+.offer-tags{
+  margin-top:2rem;font-family:'IBM Plex Mono',monospace;font-size:.66rem;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--mist-soft);
+}
+.offer-block .offer-tags,.offer-block .offer-proof{max-width:none}   /* pas la contrainte 42ch du corps */
+.offer-tags span{white-space:nowrap}   /* jamais de césure dans un tag */
+.offer-proof{
+  margin-top:1rem;font-family:'IBM Plex Mono',monospace;font-size:.66rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--bio-ink);
+}
+
+/* mobile : le noyau devient un bandeau sticky opaque au-dessus du flux */
+@media(max-width:860px){
+  .offer-layout{display:block}
+  .offer-stage{
+    position:sticky;top:0;z-index:6;background:var(--void);
+    margin:0 calc(-1*clamp(1.5rem,4vw,3.5rem));
+    padding:.7rem clamp(1.5rem,4vw,3.5rem) .55rem;
+    border-bottom:1px solid rgba(33,26,56,.10);
+  }
+  .offer-stage-sticky{position:static;padding:0}
+  #offerCanvas{aspect-ratio:auto;height:36vh}
+  .offer-stage-label{margin-top:.5rem}
+  .offer-block{min-height:58vh;justify-content:flex-start;padding:2.4rem 0 2rem}
+}
 
 /* ---------- Méthode ---------- */
 .method{position:relative;padding:clamp(6rem,12vw,10rem) clamp(1.5rem,4vw,3.5rem);
@@ -350,14 +383,12 @@ footer{
   font-family:'IBM Plex Mono',monospace;font-size:.62rem;
   letter-spacing:.16em;text-transform:uppercase;
 }
-.footer-legal{opacity:.6;transition:opacity .25s}
+.footer-legal{opacity:.6;transition:opacity .25s;
+  /* cible tactile >=24px (WCAG 2.5.8) sans changer le rendu */
+  padding:.8rem .4rem;margin:-.8rem -.4rem}
 a.footer-legal:hover{opacity:1}
 
 /* ---------- Symboles génératifs (l'univers du noyau hors hero) ---------- */
-.glyph{
-  position:absolute;left:50%;bottom:1.8rem;transform:translateX(-50%);
-  width:140px;height:140px;pointer-events:none;
-}
 .contact-nuee{position:absolute;inset:0;pointer-events:none;z-index:1}
 .method-canvas{position:absolute;left:0;top:0;pointer-events:none}
 .method-head,.method-steps{position:relative;z-index:1}

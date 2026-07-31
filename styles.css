@@ -278,7 +278,7 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
   }
   .offer-stage-sticky{position:static;padding:0}
   #offerCanvas{aspect-ratio:auto;height:21vh}
-  .offer-stage-label{margin-top:.3rem;font-size:.58rem}
+  .offer-stage-label{display:none}
   .offer-block{min-height:52vh;justify-content:flex-start;padding:2.2rem 0 1.8rem}
 }
 

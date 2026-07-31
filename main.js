@@ -100,6 +100,27 @@
     };
     document.addEventListener('touchstart', heroTouch, {passive:true});
     document.addEventListener('touchmove',  heroTouch, {passive:true});
+    /* verrou d'axe : au premier mouvement, le geste choisit son camp —
+       plutôt horizontal = jeu (l'écran ne bouge plus jusqu'au lever du doigt),
+       plutôt vertical = défilement natif intact */
+    var heroEl = document.getElementById('hero');
+    if(heroEl){
+      var tx0 = 0, ty0 = 0, axis = 0; /* 0 indécis · 1 jeu · 2 défilement */
+      heroEl.addEventListener('touchstart', function(e){
+        var t = e.touches[0]; if(!t) return;
+        tx0 = t.clientX; ty0 = t.clientY; axis = 0;
+      }, {passive:true});
+      heroEl.addEventListener('touchmove', function(e){
+        var t = e.touches[0]; if(!t) return;
+        if(axis === 0){
+          var dx = Math.abs(t.clientX - tx0), dy = Math.abs(t.clientY - ty0);
+          if(dx*dx + dy*dy > 100) axis = dx > dy*1.15 ? 1 : 2;
+        }
+        if(axis === 1) e.preventDefault();
+      }, {passive:false});
+      heroEl.addEventListener('touchend',    function(){ axis = 0; }, {passive:true});
+      heroEl.addEventListener('touchcancel', function(){ axis = 0; }, {passive:true});
+    }
   }
 
   if(hero){

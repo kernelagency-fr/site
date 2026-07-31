@@ -112,6 +112,8 @@
       dot.style.transform = 'translate(' + mx + 'px,' + my + 'px) translate(-50%,-50%)';
       ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px) translate(-50%,-50%)';
     }
+    /* symboles génératifs (offre, méthode, preuve, atmosphère) — même rAF */
+    if(window.KernelSymbols && !document.hidden) window.KernelSymbols.tick(performance.now());
     if(!animateHero || !heroVisible || document.hidden) return;
     mouseN.x += (mouseTarget.x - mouseN.x)*0.05;
     mouseN.y += (mouseTarget.y - mouseN.y)*0.05;
@@ -119,7 +121,7 @@
     hero.tick(clock.getElapsedTime());
   }
   /* ne pas faire tourner la boucle à vide (tactile + reduced-motion) */
-  if(hasHover || animateHero) loop();
+  if(hasHover || animateHero || (window.KernelSymbols && window.KernelSymbols.active)) loop();
 
   /* ============ Séquence d'entrée ============ */
   var heroEls = ['#nav','#heroOverline','#heroTagline','#heroCtas','#heroScroll','#metaL','#metaR'];

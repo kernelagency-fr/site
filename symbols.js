@@ -2,8 +2,8 @@
    KERNEL — SYMBOLES GÉNÉRATIFS (l'univers du noyau, après le hero)
    - Offre : LE NOYAU QUI SE RÉORGANISE — un seul nuage de particules
      sticky qui s'assemble à l'entrée de section (nuage -> wireframe)
-     puis morphe entre 3 formations (wireframe de site, écrans d'app
-     reliés, pipeline de flux ⁄03), piloté par le scroll
+     puis morphe entre 4 formations (wireframe de site, écrans d'app
+     reliés, fenêtre de code ⁄03, pipeline de flux ⁄04), piloté par le scroll
    - Méthode : filament de particules reliant les 4 étapes (nœuds ancrés)
    - Atmosphère : poussière du noyau en dérive lente sur les fonds clairs
    - Preuve : orbite elliptique esquissée autour du méta (écho glyphe IA)
@@ -70,10 +70,11 @@ function setSize(c, w, h){
 /* ============================================================
    1. LE NOYAU QUI SE RÉORGANISE — pièce maîtresse de l'Offre
       Un seul nuage (3000 pts desktop / 1200 mobile) qui morphe
-      entre 3 formations selon le bloc de service actif :
-      ⁄01 wireframe de page web  ⁄02 écrans d'app reliés  ⁄03 LE FLUX
+      entre 4 formations selon le bloc de service actif :
+      ⁄01 wireframe de page web  ⁄02 écrans d'app reliés
+      ⁄03 fenêtre de code (dernière ligne « écrite » en boucle)  ⁄04 LE FLUX
       (pipeline gauche -> droite : entrées éparses, cœur dense, rails)
-      Scroll -> cible continue f∈[0..3] (0 = nuage d'entrée), amortie,
+      Scroll -> cible continue f∈[0..4] (0 = nuage d'entrée), amortie,
       appariement des particules par proximité pour garder une
       silhouette pendant le morph, respiration au repos.
       reduced-motion : saut d'état, dessin statique de la formation active.
@@ -84,14 +85,14 @@ function initOffer(){
   var labelEl = document.getElementById('offerLabel');
   if(!section || !canvas || !labelEl) return;
   var blocks = [].slice.call(section.querySelectorAll('.offer-block'));
-  if(blocks.length < 3) return;
+  if(blocks.length < 4) return;
 
   var ctx = canvas.getContext('2d');
   var rand = rng(9001);
   var N = mqBanner.matches ? 1200 : 3000;   /* même seuil que le CSS */
   var INK = '#211A38';
   var TAU = Math.PI*2;
-  var LABELS = ['⁄01 — SITES WEB', '⁄02 — APPLICATIONS', '⁄03 — AUTOMATISATIONS IA'];
+  var LABELS = ['⁄01 — SITES WEB', '⁄02 — APPLICATIONS', '⁄03 — LOGICIELS', '⁄04 — AUTOMATISATIONS IA'];
 
   /* ---- identité fixe de chaque particule ---- */
   var colr = new Array(N);
@@ -160,6 +161,12 @@ function initOffer(){
         var d = {fl:q, x:0, y:0};
         flowPos(q, q.u0, 0, d);
         p.push(d);
+      } else if(s.cw){
+        var qc = {u:clamp01(s.cw.u+(rand()-0.5)*0.08),
+                  jx:(rand()-0.5)*0.004, jy:(rand()-0.5)*0.005,
+                  bx:rand()*0.012, by:(rand()-0.5)*0.026};
+        p.push({cw:qc,
+                x:CLAST.x0+(CLAST.x1-CLAST.x0)*qc.u, y:CLAST.y});
       } else {
         p.push({x:s.x+(rand()-0.5)*0.008, y:s.y+(rand()-0.5)*0.008});
       }
@@ -230,6 +237,55 @@ function initOffer(){
     return fit(p);
   }
 
+  /* ⁄03 — FENÊTRE DE CODE : cadre + barre de titre à 3 pastilles (écho
+     ⁄01/⁄02), corps = 7 lignes indentées en escalier (0/1/2), tokens
+     séparés par des espaces. Signature : la dernière ligne « s'écrit »
+     en boucle lente — ses points se déposent derrière un curseur-bloc
+     corail qui clignote, puis la ligne se réinitialise. Comme le flux,
+     la formation vit en continu au repos. */
+  var CIND  = [0.13, 0.205, 0.28];               /* colonnes d'indentation */
+  var CLAST = {x0:0.205, x1:0.60, y:0.80};       /* la ligne qui s'écrit */
+  var CCYCLE = 6.5;                              /* s par boucle d'écriture */
+  function codeWrite(t){
+    /* progression 0..1 : écriture sur ~4,4 s, tenue, reset au bouclage */
+    var c = t/CCYCLE; c -= Math.floor(c);
+    return Math.min(1, c/0.68);
+  }
+  function buildCode(){
+    var p = [];
+    rrect(p, 0.5,0.5, 0.86,0.74, 0.045, nn(0.16), 0.004);    /* cadre fenêtre */
+    seg(p, 0.07,0.245, 0.93,0.245, nn(0.05), 0.004);         /* barre de titre */
+    cluster(p, 0.115,0.19, 0.0085, nn(0.010));               /* 3 pastilles */
+    cluster(p, 0.15, 0.19, 0.0085, nn(0.010));
+    cluster(p, 0.185,0.19, 0.0085, nn(0.010));
+    /* lignes de code : [indent, [x fin de chaque token]] — l'escalier
+       d'indentation 0/1/2 et les espaces entre tokens font « code » */
+    var lines = [
+      [0, 0.335, [0.30, 0.58]],
+      [1, 0.412, [0.38, 0.72]],
+      [2, 0.489, [0.62]],
+      [2, 0.566, [0.46, 0.78]],
+      [1, 0.643, [0.55]],
+      [0, 0.720, [0.44]]
+    ];
+    for(var l=0;l<lines.length;l++){
+      var x0 = CIND[lines[l][0]], y = lines[l][1], tk = lines[l][2];
+      for(var m=0;m<tk.length;m++){
+        seg(p, x0, y, tk[m], y, nn(0.019*(tk[m]-x0)/0.35), 0.005);
+        x0 = tk[m] + 0.035;                                  /* espace token */
+      }
+    }
+    var nw = nn(0.05);                           /* la ligne vivante */
+    for(var i=0;i<nw;i++){
+      var q = {u: nw === 1 ? 0.5 : i/(nw-1),
+               jx:(rand()-0.5)*0.004, jy:(rand()-0.5)*0.005,
+               bx:rand()*0.012, by:(rand()-0.5)*0.026};
+      p.push({cw:q,
+              x:CLAST.x0+(CLAST.x1-CLAST.x0)*q.u, y:CLAST.y});
+    }
+    return fit(p);
+  }
+
   /* ⁄0 — nuage d'entrée : l'écho du hero, avant que le noyau s'organise */
   function buildCloud(){
     var p = [], i, a, rr;
@@ -240,7 +296,7 @@ function initOffer(){
     return fit(p);
   }
 
-  /* ⁄03 — LE FLUX : pipeline gauche -> droite, lisible au premier regard.
+  /* ⁄04 — LE FLUX : pipeline gauche -> droite, lisible au premier regard.
      À gauche des entrées éparses en désordre qui convergent, au centre
      le cœur corail dense qu'elles traversent, à droite 4 rails de sortie
      réguliers (registre machine). Circulation permanente, même au repos. */
@@ -299,9 +355,9 @@ function initOffer(){
     return fit(p);
   }
 
-  var F = [buildCloud(), buildSite(), buildApp(), buildFlux()];
+  var F = [buildCloud(), buildSite(), buildApp(), buildCode(), buildFlux()];
 
-  /* position d'un slot (les particules du flux ⁄03 circulent avec le temps) */
+  /* position d'un slot (le flux ⁄04 circule, la ligne de code ⁄03 s'écrit) */
   var A = {x:0, y:0}, B = {x:0, y:0};
   function slotPos(k, i, t, out){
     var s = F[k][i];
@@ -309,6 +365,17 @@ function initOffer(){
       var u = (s.fl.u0 + t*s.fl.sp) % 1;
       if(u < 0) u += 1;
       flowPos(s.fl, u, t, out);
+    } else if(s.cw){
+      var w = codeWrite(t);
+      if(s.cw.u <= w){
+        /* point déjà « écrit » : posé sur la ligne */
+        out.x = CLAST.x0 + (CLAST.x1-CLAST.x0)*s.cw.u + s.cw.jx;
+        out.y = CLAST.y + s.cw.jy;
+      } else {
+        /* pas encore écrit : massé dans le curseur-bloc, tête d'écriture */
+        out.x = CLAST.x0 + (CLAST.x1-CLAST.x0)*w + 0.004 + s.cw.bx;
+        out.y = CLAST.y + s.cw.by;
+      }
     } else { out.x = s.x; out.y = s.y; }
   }
 
@@ -325,16 +392,16 @@ function initOffer(){
   function Y(y){ return offY + y*S; }
 
   /* ---- cible de formation liée au scroll ----
-     f ∈ [0..3] : 0 nuage -> 1 site -> 2 app -> 3 flux.
+     f ∈ [0..4] : 0 nuage -> 1 site -> 2 app -> 3 code -> 4 flux.
      Le nuage s'assemble en wireframe sur les premiers ~40vh de la
      section (raccord narratif hero -> offre), puis plateaux aux centres
      de blocs avec des transitions resserrées (30 % du parcours). */
-  var centers = [0,0,0], secTop = 0, cV = -1, anchor = 0.5;
+  var centers = [0,0,0,0], secTop = 0, cV = -1, anchor = 0.5;
   function computeTarget(){
     if(cV !== resizeV){
       anchor = mqBanner.matches ? 0.66 : 0.5;  /* mobile : texte sous le bandeau */
       secTop = section.getBoundingClientRect().top + window.scrollY;
-      for(var k=0;k<3;k++){
+      for(var k=0;k<4;k++){
         var r = blocks[k].getBoundingClientRect();
         centers[k] = r.top + window.scrollY + r.height*0.5;
       }
@@ -343,7 +410,7 @@ function initOffer(){
     var vc = window.scrollY + window.innerHeight*anchor;
     var az = Math.max(1, Math.min(window.innerHeight*0.4, centers[0]-secTop));
     var f = clamp01((vc - secTop)/az);
-    for(var k2=1;k2<3;k2++){
+    for(var k2=1;k2<4;k2++){
       var u = (vc - centers[k2-1]) / Math.max(1, centers[k2]-centers[k2-1]);
       f += clamp01((u-0.35)/0.30);
     }
@@ -351,8 +418,8 @@ function initOffer(){
   }
 
   /* ---- filets hairline structurels (l'assise de la lisibilité) ----
-     k = indice de formation : 0 nuage (rien), 1 site, 2 app, 3 flux */
-  function scaffold(k, aVis, tt){
+     k = indice de formation : 0 nuage (rien), 1 site, 2 app, 3 code, 4 flux */
+  function scaffold(k, aVis, tt, statik){
     if(k === 0 || aVis <= 0.02) return;
     ctx.lineWidth = 0.8;
     ctx.strokeStyle = 'rgba(33,26,56,' + (0.14*aVis).toFixed(3) + ')';
@@ -371,6 +438,14 @@ function initOffer(){
       ctx.moveTo(X(0.46), Y(0.28));  ctx.lineTo(X(0.585), Y(0.355));
       ctx.moveTo(X(0.685), Y(0.50)); ctx.lineTo(X(0.565), Y(0.655));
       ctx.moveTo(X(0.295), Y(0.35)); ctx.lineTo(X(0.42), Y(0.645));
+    } else if(k === 3){
+      if(ctx.roundRect)                /* cadre de la fenêtre */
+        ctx.roundRect(X(0.07), Y(0.13), 0.86*S, 0.74*S, 0.045*S);
+      else ctx.rect(X(0.07), Y(0.13), 0.86*S, 0.74*S);
+      ctx.moveTo(X(0.07), Y(0.245)); ctx.lineTo(X(0.93), Y(0.245));
+      /* guides d'indentation verticaux — signature d'éditeur de code */
+      ctx.moveTo(X(CIND[1]-0.02), Y(0.30)); ctx.lineTo(X(CIND[1]-0.02), Y(0.83));
+      ctx.moveTo(X(CIND[2]-0.02), Y(0.455)); ctx.lineTo(X(CIND[2]-0.02), Y(0.60));
     } else {
       /* lignes d'entrée esquissées, convergentes vers le cœur */
       [[0.03,0.14,0.475],[0.02,0.40,0.49],[0.05,0.63,0.51],[0.03,0.87,0.53]]
@@ -384,6 +459,18 @@ function initOffer(){
       }
     }
     ctx.stroke();
+    if(k === 3){
+      /* LE CURSEUR-BLOC corail au bout de la ligne qui s'écrit.
+         Clignotement carré (rythme terminal) — plein et fixe en statique */
+      var w = codeWrite(tt);
+      if(statik || (tt % 1.1) < 0.66){
+        ctx.globalAlpha = 0.92*aVis;
+        ctx.fillStyle = CORAL;
+        ctx.fillRect(X(CLAST.x0 + (CLAST.x1-CLAST.x0)*w + 0.004),
+                     Y(CLAST.y - 0.017), 0.014*S, 0.034*S);
+        ctx.globalAlpha = 1;
+      }
+    }
   }
 
   /* ---- dessin ---- */
@@ -395,8 +482,8 @@ function initOffer(){
     var tf = computeTarget();
     if(statik) f = Math.max(1, Math.round(tf));  /* jamais le nuage en statique */
     else f += (tf - f)*Math.min(1, dt*3.8);      /* ~1s de voyage */
-    if(f < 0) f = 0; if(f > 3) f = 3;
-    var k0 = Math.min(2, Math.floor(f));
+    if(f < 0) f = 0; if(f > 4) f = 4;
+    var k0 = Math.min(3, Math.floor(f));
     var e = clamp01(f - k0);
 
     /* étiquette : pluriels alignés sur les h3, crossfade court au lieu
@@ -410,11 +497,13 @@ function initOffer(){
 
     ctx.setTransform(DPR,0,0,DPR,0,0);
     ctx.clearRect(0,0,W,H);
-    var tt = statik ? 2.1 : t;
-    scaffold(k0, 1-e, tt);
+    /* statique : 5.2 s tombe dans la phase « ligne complète » du cycle
+       d'écriture ⁄03 (fenêtre entière, curseur plein sans clignotement) */
+    var tt = statik ? 5.2 : t;
+    scaffold(k0, 1-e, tt, statik);
     /* plancher d'alpha (0.35) + rampe : la forme cible se devine dès le
        départ et reste lisible au cœur du transit, sans saut au plateau */
-    if(e > 0.02) scaffold(k0+1, Math.min(1, 0.35 + e), tt);
+    if(e > 0.02) scaffold(k0+1, Math.min(1, 0.35 + e), tt, statik);
 
     var breath = statik ? 0 : Math.sin(t*0.55)*0.011;
     var mr = null;

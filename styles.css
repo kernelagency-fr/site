@@ -219,18 +219,19 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
   background:rgba(33,26,56,.08);border:1px solid rgba(33,26,56,.08)}
 @media(max-width:860px){.offer-grid{grid-template-columns:1fr}}
 .offer-card{
-  background:var(--void);padding:2.6rem 2.2rem 3rem;position:relative;
-  transition:background .4s ease;overflow:hidden;
+  background:var(--abyss);padding:2.6rem 2.2rem 3rem;position:relative;
+  transition:background .4s ease,transform .4s ease,box-shadow .4s ease;overflow:hidden;
 }
 .offer-card::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(60% 50% at 50% 0%,rgba(255,122,89,.07),transparent 70%);
+  background:radial-gradient(60% 50% at 50% 0%,rgba(255,122,89,.14),transparent 70%);
   opacity:0;transition:opacity .4s ease}
-.offer-card:hover{background:var(--abyss)}
+.offer-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(33,26,56,.25)}
 .offer-card:hover::before{opacity:1}
 .offer-num{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--bio-ink);
   letter-spacing:.2em;margin-bottom:2.2rem;display:block}
 .offer-card h3{font-size:1.35rem;font-weight:700;margin-bottom:1rem;letter-spacing:.01em}
 .offer-card p{font-size:.92rem;line-height:1.7;color:var(--mist)}
+.offer-card p strong{color:var(--bone);font-weight:600}
 .offer-card .card-line{position:absolute;left:0;top:0;width:100%;height:2px;
   background:var(--bio);transform:scaleX(0);transform-origin:left;
   transition:transform .5s cubic-bezier(.65,0,.35,1)}

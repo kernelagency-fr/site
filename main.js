@@ -88,6 +88,17 @@
     mouseTarget.x = (e.clientX/innerWidth)*2 - 1;
     mouseTarget.y = -((e.clientY/innerHeight)*2 - 1);
   }, {passive:true});
+  /* tactile : le doigt alimente la même cible — passif, ne bloque jamais le scroll,
+     et ne réactive ni curseur custom ni boutons magnétiques (réservés à la souris) */
+  if(!prefersReduced){
+    var heroTouch = function(e){
+      var t = e.touches[0]; if(!t) return;
+      mouseTarget.x = (t.clientX/innerWidth)*2 - 1;
+      mouseTarget.y = -((t.clientY/innerHeight)*2 - 1);
+    };
+    document.addEventListener('touchstart', heroTouch, {passive:true});
+    document.addEventListener('touchmove',  heroTouch, {passive:true});
+  }
 
   if(hero){
     /* écouteur unique : re-rendu statique inclus quand il n'y a pas d'animation */

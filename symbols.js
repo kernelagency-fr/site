@@ -25,11 +25,25 @@ var CORAL = '#FF7A59', LILAC = '#B79CFF';
 var units = [];                 /* {tick:function(tSecondes)} */
 
 /* souris partagée (pointeurs fins uniquement) */
-var mouse = {x:-1e4, y:-1e4};
+var mouse = {x:-1e4, y:-1e4, r:1};
 if(window.matchMedia('(hover:hover)').matches && !reduced){
   document.addEventListener('mousemove', function(e){
-    mouse.x = e.clientX; mouse.y = e.clientY;
+    mouse.x = e.clientX; mouse.y = e.clientY; mouse.r = 1;
   }, {passive:true});
+}
+/* tactile : mêmes particules, rayon élargi (le doigt masque ce qu'il touche),
+   écouteurs passifs — le défilement reste intact ; relâche douce au lever
+   (les particules reviennent d'elles-mêmes par leur propre amortissement) */
+if(!reduced){
+  var onTouch = function(e){
+    var t = e.touches[0]; if(!t) return;
+    mouse.x = t.clientX; mouse.y = t.clientY; mouse.r = 1.45;
+  };
+  var offTouch = function(){ mouse.x = -1e4; mouse.y = -1e4; };
+  document.addEventListener('touchstart',  onTouch,  {passive:true});
+  document.addEventListener('touchmove',   onTouch,  {passive:true});
+  document.addEventListener('touchend',    offTouch, {passive:true});
+  document.addEventListener('touchcancel', offTouch, {passive:true});
 }
 
 /* versions de géométrie : les rects sont mis en cache hors boucle rAF.
@@ -543,9 +557,9 @@ function initOffer(){
       var px = offX + x*S, py = offY + y*S;
       if(mr){
         var mdx = px - (mouse.x - mr.left), mdy = py - (mouse.y - mr.top);
-        var d2 = mdx*mdx + mdy*mdy;
-        if(d2 < 6400 && d2 > 0.01){
-          var d = Math.sqrt(d2), fo = (1 - d/80)*9;
+        var d2 = mdx*mdx + mdy*mdy, R = 80*mouse.r;
+        if(d2 < R*R && d2 > 0.01){
+          var d = Math.sqrt(d2), fo = (1 - d/R)*9;
           px += mdx/d*fo; py += mdy/d*fo;
         }
       }

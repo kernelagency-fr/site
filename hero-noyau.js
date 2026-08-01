@@ -16,7 +16,7 @@
     }catch(e){ renderer = null; }
     if(!renderer || !renderer.getContext()) return null;
 
-    var PR = Math.min(window.devicePixelRatio || 1, opts.mobile ? 2.6 : 1.8);   /* net sur écrans 3x */
+    var PR = Math.min(window.devicePixelRatio || 1, opts.mobile ? 2.25 : 1.8);   /* équilibre netteté/fluidité */
     renderer.setPixelRatio(PR);
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -39,7 +39,7 @@
     };
 
     /* --- noyau : particules adaptées à l'appareil --- */
-    var COUNT = opts.mobile ? 6000 : 16000;
+    var COUNT = opts.mobile ? 5200 : 16000;
     var pos = new Float32Array(COUNT*3);
     var seed = new Float32Array(COUNT);
     for(var i=0;i<COUNT;i++){

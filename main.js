@@ -114,7 +114,9 @@
         var t = e.touches[0]; if(!t) return;
         if(axis === 0){
           var dx = Math.abs(t.clientX - tx0), dy = Math.abs(t.clientY - ty0);
-          if(dx*dx + dy*dy > 100) axis = dx > dy*1.15 ? 1 : 2;
+          /* décision rapide (6px) : moins l'indécision dure, moins iOS a le temps
+             d'amorcer un défilement qu'on coupera — c'était la source des à-coups */
+          if(dx*dx + dy*dy > 36) axis = dx > dy*1.25 ? 1 : 2;
         }
         if(axis === 1) e.preventDefault();
       }, {passive:false});

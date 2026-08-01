@@ -1,0 +1,30 @@
+name: Vérifications du site
+
+on: [push]
+
+jobs:
+  verifie:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Le message central est présent
+        run: |
+          grep -q "Le noyau intelligent au cœur de votre activité" index.html \
+            || { echo "ÉCHEC : le message central a disparu d'index.html"; exit 1; }
+
+      - name: Aucune ressource externe (hors vendor/)
+        run: |
+          if grep -rEn "fonts\.googleapis|fonts\.gstatic|cdn\.|unpkg|jsdelivr|googletagmanager" \
+              --include="*.html" --include="*.css" --include="*.js" \
+              --exclude-dir=vendor --exclude-dir=.git .; then
+            echo "ÉCHEC : ressource externe détectée"; exit 1
+          fi
+
+      - name: Aucun nom de client
+        run: |
+          # motif assemblé pour que ce fichier ne le contienne pas lui-même
+          M="loreedes"; M="${M}monskys"
+          if grep -rin --exclude-dir=.git "$M" .; then
+            echo "ÉCHEC : nom de client détecté"; exit 1
+          fi

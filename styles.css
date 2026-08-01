@@ -62,11 +62,14 @@ html.js body{cursor:none}
 a{color:inherit;text-decoration:none}
 .mono{font-family:'IBM Plex Mono',monospace}
 
-/* accessibilité : focus clavier visible partout */
-a:focus-visible,.btn:focus-visible{
-  outline:2px solid var(--bio);outline-offset:4px;border-radius:4px;
+/* accessibilité : focus clavier visible partout — corail assombri (AA)
+   sur les sections claires, corail pur dans la nuit (contact, footer) */
+a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--bio-ink);outline-offset:4px;border-radius:4px;
 }
 .btn:focus-visible{border-radius:100px}
+.contact a:focus-visible,.contact button:focus-visible,
+footer a:focus-visible{outline-color:var(--bio)}
 
 /* ---------- Curseur ---------- */
 .cursor-dot,.cursor-ring{
@@ -160,21 +163,27 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
   padding:0 1.5rem;
 }
 .hero-tagline strong{color:var(--bone);font-weight:500}
-/* lisibilité du texte posé sur les zones denses (blob ET noyau) */
-.hero-blob .hero-tagline,.hero-noyau .hero-tagline{
+/* lisibilité du texte posé sur la zone dense du noyau */
+.hero-noyau .hero-tagline{
   color:#453A66;
   text-shadow:0 1px 20px rgba(253,248,242,.95),0 0 8px rgba(253,248,242,.8),0 0 2px rgba(253,248,242,.9);
 }
-.hero-blob .hero-overline,.hero-noyau .hero-overline{
+.hero-noyau .hero-overline{
+  color:var(--bone);
   text-shadow:0 1px 20px rgba(253,248,242,.95),0 0 8px rgba(253,248,242,.8),0 0 2px rgba(253,248,242,.9);
 }
-.hero-noyau .hero-overline{color:var(--bone)}
-.hero-blob .btn--ghost{color:#453A66;border-color:rgba(33,26,56,.32);
-  background:rgba(253,248,242,.35)}
-.hero-blob .btn{background:rgba(253,248,242,.35);backdrop-filter:blur(3px)}
-/* hero noyau : mêmes CTA lisibles sur la zone dense du nuage */
+/* CTA lisibles sur la zone dense du nuage */
 .hero-noyau .btn{background:rgba(253,248,242,.5);backdrop-filter:blur(2px)}
 .hero-noyau .btn--ghost{border-color:rgba(33,26,56,.32)}
+/* écrans peu hauts : le nuage frôle tagline et CTA — halo crème renforcé */
+@media (max-height:800px){
+  .hero-noyau .hero-tagline,.hero-noyau .hero-overline{
+    text-shadow:0 1px 26px rgba(253,248,242,1),0 0 14px rgba(253,248,242,.95),
+      0 0 5px rgba(253,248,242,.95);
+  }
+  .hero-noyau .btn{background:rgba(253,248,242,.68)}
+  .hero-noyau .btn--ghost{background:rgba(253,248,242,.55)}
+}
 .hero-ctas{display:flex;gap:1.1rem;margin-top:2.6rem;flex-wrap:wrap;justify-content:center;padding:0 1rem}
 
 .btn{
@@ -190,11 +199,11 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
   transform:scaleX(0);transform-origin:left;transition:transform .38s cubic-bezier(.65,0,.35,1);z-index:0}
 .btn span:not(.btn-fill){position:relative;z-index:1}
 @media(hover:hover){
-.btn:hover{color:var(--void);border-color:var(--bio);box-shadow:0 0 40px rgba(255,122,89,.35)}
+.btn:hover{color:var(--bone);border-color:var(--bio);box-shadow:0 0 40px rgba(255,122,89,.35)}
 .btn:hover .btn-fill{transform:scaleX(1)}
 }
 .btn--ghost{border-color:rgba(33,26,56,.18);color:var(--mist)}
-.btn--ghost:hover{color:var(--void);border-color:var(--bio)}
+.btn--ghost:hover{color:var(--bone);border-color:var(--bio)}
 
 .hero-scroll{
   position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);z-index:10;
@@ -235,8 +244,11 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
 .offer-stage-label{
   margin-top:.9rem;text-align:center;
   font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.3em;
-  color:var(--bio-ink);text-transform:uppercase;transition:opacity .2s ease;
+  color:var(--bio-ink);text-transform:uppercase;
+  /* pas de transition CSS : le JS pilote un fondu calé sur la durée du morph */
 }
+/* sans JS : pas de canvas d'offre (le flux textuel se suffit) */
+html:not(.js) .offer-stage{display:none}
 
 /* blocs de service : typographie éditoriale, filets hairline, zéro boîte */
 .offer-block{
@@ -258,7 +270,7 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
 .offer-block p strong{color:var(--bone);font-weight:600}
 .offer-tags{
   margin-top:2rem;font-family:'IBM Plex Mono',monospace;font-size:.66rem;
-  letter-spacing:.24em;text-transform:uppercase;color:var(--mist-soft);
+  letter-spacing:.24em;text-transform:uppercase;color:var(--mist);
 }
 .offer-block .offer-tags,.offer-block .offer-proof{max-width:none}   /* pas la contrainte 42ch du corps */
 .offer-tags span{white-space:nowrap}   /* jamais de césure dans un tag */
@@ -267,19 +279,33 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
   letter-spacing:.18em;text-transform:uppercase;color:var(--bio-ink);
 }
 
-/* mobile : le noyau devient un bandeau sticky opaque au-dessus du flux */
+/* mobile : le noyau devient un bandeau sticky opaque au-dessus du flux —
+   paddings réduits, bandeau total ~30 % du viewport */
 @media(max-width:860px){
   .offer-layout{display:block}
   .offer-stage{
     position:sticky;top:0;z-index:6;background:var(--void);
     margin:0 calc(-1*clamp(1.5rem,4vw,3.5rem));
-    padding:.7rem clamp(1.5rem,4vw,3.5rem) .55rem;
+    padding:.5rem clamp(1.5rem,4vw,3.5rem) .4rem;
     border-bottom:1px solid rgba(33,26,56,.10);
   }
   .offer-stage-sticky{position:static;padding:0}
-  #offerCanvas{aspect-ratio:auto;height:21vh}
+  #offerCanvas{aspect-ratio:auto;height:min(28vh,240px)}
   .offer-stage-label{display:none}
-  .offer-block{min-height:52vh;justify-content:flex-start;padding:2.2rem 0 1.8rem}
+  .offer-block{min-height:min(52vh,340px);justify-content:flex-start;padding:2.2rem 0 1.8rem}
+}
+/* palier tablette : colonne de lecture large, bandeau plafonné */
+@media(max-width:860px) and (min-width:600px){
+  .offer-stage{padding:.7rem clamp(1.5rem,4vw,3.5rem) .55rem}
+  #offerCanvas{height:min(21vh,150px)}
+  .offer-block{min-height:min(52vh,26rem)}
+  .offer-block p{max-width:54ch}
+}
+/* très grands écrans : rythme vertical resserré (moins de vide à 1920) */
+@media(min-width:1600px){
+  .offer-block{min-height:min(65vh,34rem);padding:2.5rem 0}
+  .offer{padding-bottom:2.5rem}
+  .method{padding-top:7rem}
 }
 
 /* ---------- Méthode ---------- */
@@ -307,6 +333,29 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
 .method-step h3{font-size:1.16rem;font-weight:700;margin-bottom:.8rem}
 .method-step p{font-size:.88rem;line-height:1.7;color:var(--mist)}
 
+/* engagements : bande fine en clôture de méthode */
+.commitments{
+  margin-top:clamp(3rem,6vw,5rem);position:relative;
+  border-top:1px solid rgba(33,26,56,.14);border-bottom:1px solid rgba(33,26,56,.14);
+  padding:1.5rem 0 1.7rem;
+}
+.commitments::before{content:'';position:absolute;top:-1px;left:0;width:3.4rem;height:1px;
+  background:var(--bio)}
+.commitments-label{
+  font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.24em;
+  color:var(--bio-ink);text-transform:uppercase;margin-bottom:1.1rem;
+}
+.commitments-list{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1rem clamp(1.4rem,3vw,2.4rem)}
+@media(max-width:1000px){.commitments-list{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.commitments-list{grid-template-columns:1fr}}
+.commitments-list li{
+  position:relative;padding-left:1.35rem;
+  font-size:.85rem;line-height:1.55;color:var(--mist);
+}
+.commitments-list li::before{content:'✓';position:absolute;left:0;top:0;
+  color:var(--bio);font-weight:700}
+
 /* ---------- Preuve ---------- */
 .proof{position:relative;border-top:1px solid rgba(33,26,56,.08);
   padding:clamp(5rem,10vw,8rem) clamp(1.5rem,4vw,3.5rem)}
@@ -316,6 +365,43 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
 .proof-meta{margin-top:2.2rem;font-family:'IBM Plex Mono',monospace;font-size:.62rem;
   letter-spacing:.18em;color:var(--mist);text-transform:uppercase}
 @media(max-width:480px){.proof-meta{font-size:.6rem;letter-spacing:.12em}}
+
+/* journal du noyau : lignes datées en mono, numéro lilas */
+.journal{
+  list-style:none;margin-top:2.6rem;text-align:left;
+  border-top:1px solid rgba(33,26,56,.12);
+}
+.journal li{
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;line-height:1.65;
+  letter-spacing:.02em;color:var(--bone);
+  padding:.85rem 0;border-bottom:1px solid rgba(33,26,56,.12);
+}
+.journal .j-num{color:var(--lilas);font-weight:500}
+
+/* ---------- FAQ — questions directes ---------- */
+.faq{position:relative;border-top:1px solid rgba(33,26,56,.08);
+  padding:clamp(5rem,10vw,8rem) clamp(1.5rem,4vw,3.5rem)}
+.faq-inner{max-width:46rem;margin:0 auto}
+.faq-title{font-size:clamp(1.7rem,4.4vw,3rem);font-weight:700;line-height:1.1}
+.faq-list{margin-top:clamp(2rem,4vw,3rem);border-bottom:1px solid rgba(33,26,56,.14)}
+.faq-item{border-top:1px solid rgba(33,26,56,.14)}
+.faq-item summary{
+  list-style:none;cursor:pointer;position:relative;
+  padding:1.15rem 2.2rem 1.15rem 0;
+  font-weight:600;font-size:clamp(.95rem,1.3vw,1.05rem);line-height:1.5;
+  transition:color .25s;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{
+  content:'';position:absolute;right:.35rem;top:50%;
+  width:.55rem;height:.55rem;
+  border-right:2px solid var(--bio);border-bottom:2px solid var(--bio);
+  transform:translateY(-70%) rotate(45deg);
+  transition:transform .3s ease;
+}
+.faq-item[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+.faq-item summary:hover{color:var(--bio-ink)}
+.faq-item p{padding:0 0 1.4rem;font-size:.92rem;line-height:1.75;color:var(--mist);max-width:60ch}
 
 /* ---------- Contact — nuit violette ---------- */
 .contact{
@@ -376,6 +462,55 @@ html.js .hero-scroll,html.js .hero-meta{opacity:0}
 .contact ::selection{background:var(--bio);color:var(--night)}
 .contact a:focus-visible{outline-color:var(--bio)}
 
+/* qui répond : deux lignes au-dessus de l'email */
+.contact-who{margin-top:2.2rem;font-size:clamp(.95rem,1.3vw,1.08rem);
+  color:var(--night-text);font-weight:600}
+.contact-who-sub{margin-top:.35rem;font-size:clamp(.85rem,1.2vw,.95rem);
+  color:var(--night-mist)}
+
+/* adresse sélectionnable + bouton copier */
+.contact-copy{
+  margin-top:1.3rem;display:flex;align-items:center;justify-content:center;
+  gap:.9rem;flex-wrap:wrap;
+}
+.contact-mail-text{
+  font-size:.78rem;letter-spacing:.04em;color:var(--night-mist);
+  user-select:all;-webkit-user-select:all;
+}
+.copy-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--night-text);
+  background:none;border:1px solid rgba(253,248,242,.25);border-radius:100px;
+  padding:.55rem 1.05rem;cursor:pointer;
+  transition:color .25s,border-color .25s,box-shadow .25s;
+}
+html.js .copy-btn{cursor:none}
+.copy-btn:hover{color:var(--bio);border-color:var(--bio);
+  box-shadow:0 0 24px rgba(255,122,89,.2)}
+.copy-btn.is-done{color:var(--bio);border-color:var(--bio)}
+
+/* les trois étapes, en mono */
+.contact-steps{
+  margin-top:clamp(2.4rem,5vw,3.4rem);
+  font-size:.7rem;letter-spacing:.08em;line-height:2.1;
+  color:var(--night-mist);
+}
+.contact-steps span{white-space:nowrap}
+
+/* transparence : ce site ne vous piste pas */
+.no-track{
+  margin:0 auto clamp(3rem,6vw,4.5rem);max-width:44rem;
+  border:1px solid rgba(253,248,242,.14);border-radius:14px;
+  padding:1.3rem clamp(1.2rem,3vw,1.8rem) 1.4rem;
+  text-align:left;
+}
+.no-track-label{
+  font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.24em;
+  color:var(--bio);text-transform:uppercase;margin-bottom:.7rem;
+}
+.no-track-text{font-size:.85rem;line-height:1.75;color:var(--night-mist)}
+.no-track-zeros{color:var(--night-text);font-size:.78rem;letter-spacing:.02em}
+
 /* ---------- Footer ---------- */
 footer{
   display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
@@ -389,6 +524,11 @@ footer{
   /* cible tactile >=24px (WCAG 2.5.8) sans changer le rendu */
   padding:.8rem .4rem;margin:-.8rem -.4rem}
 a.footer-legal:hover{opacity:1}
+.footer-clock{color:var(--night-text);opacity:.75}
+.footer-clock:empty{display:none}   /* sans JS : pas d'horloge, pas de trou */
+.footer-sign{opacity:.8}
+/* mobile : jamais sous 11px */
+@media(max-width:700px){footer{font-size:.6875rem;letter-spacing:.1em}}
 
 /* ---------- Symboles génératifs (l'univers du noyau hors hero) ---------- */
 .contact-nuee{position:absolute;inset:0;pointer-events:none;z-index:1}

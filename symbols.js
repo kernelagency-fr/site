@@ -501,13 +501,14 @@ function initOffer(){
     var k0 = Math.min(3, Math.floor(f));
     var e = clamp01(f - k0);
 
-    /* étiquette : pluriels alignés sur les h3, crossfade court au lieu
-       du dimming long — lisible pendant l'essentiel de la transition */
+    /* étiquette : le fondu suit f (amorti), donc il dure exactement le
+       temps du morph — sortie vers la mi-transition, entrée ensuite,
+       échange du texte au point d'opacité nulle. Aucun saut. */
     var near = Math.round(f);
     var li = Math.max(0, near-1);
     if(li !== curLabel){ curLabel = li; labelEl.textContent = LABELS[li]; }
-    var dn = Math.abs(f - near);
-    var lop = dn < 0.35 ? 1 : Math.max(0, 1 - (dn-0.35)/0.13);
+    var dn = Math.abs(f - near);                 /* 0 au plateau, 0.5 à mi-morph */
+    var lop = clamp01((0.5 - dn)/0.35);
     labelEl.style.opacity = (lop*clamp01((f-0.15)/0.7)).toFixed(3);
 
     ctx.setTransform(DPR,0,0,DPR,0,0);
@@ -588,6 +589,19 @@ function initOffer(){
       if(!queued){ queued = true; requestAnimationFrame(redraw); }
     }, {passive:true});
     return;
+  }
+
+  /* resync en fin de défilement : géométrie re-mesurée, la cible du
+     morph est recalculée sur la position réelle (pas sur des rects
+     périmés si la mise en page a bougé pendant le scroll) */
+  var resync = function(){ cV = -1; geomV++; mrectV = -1; };
+  if('onscrollend' in window){
+    window.addEventListener('scrollend', resync, {passive:true});
+  } else {
+    var srT = 0;
+    window.addEventListener('scroll', function(){
+      clearTimeout(srT); srT = setTimeout(resync, 150);
+    }, {passive:true});
   }
 
   var visible = false;
@@ -891,7 +905,7 @@ function initConstellation(){
     if(tw > 0){
       ctx.beginPath();
       ctx.rect(0, 0, W, H);
-      ctx.rect(W/2 - tw/2 - 10, H/2 - th/2 - 4, tw + 20, th + 8);
+      ctx.rect(W/2 - tw/2 - 13, H/2 - th/2 - 7, tw + 26, th + 14);
       ctx.clip('evenodd');
     }
     /* orbites esquissées — trait 0.7px, comme le glyphe IA */

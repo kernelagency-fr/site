@@ -1,7 +1,7 @@
 /* ============================================================
    KERNEL AGENCY — orchestration
    - curseur custom + boutons magnétiques + reveal au scroll
-   - hero commutable : ?hero=blob -> blob chrome, défaut -> noyau
+   - hero unique : le noyau
    - une seule boucle rAF partagée (curseur + WebGL)
    - IntersectionObserver : pas de rendu WebGL hors écran
    - prefers-reduced-motion : intro sans déplacement, canvas statique
@@ -61,18 +61,13 @@
   }, {threshold: 0.15});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
 
-  /* ============ Hero commutable : noyau (défaut) / blob ============ */
+  /* ============ Hero : le noyau ============ */
   var canvas = document.getElementById('gl');
-  var variant = 'noyau';
-  try{
-    if(new URLSearchParams(location.search).get('hero') === 'blob') variant = 'blob';
-  }catch(e){}
-
-  document.body.classList.add('hero-' + variant);
+  document.body.classList.add('hero-noyau');
 
   var hero = null;
-  if(window.THREE && window.KernelHeroes && window.KernelHeroes[variant]){
-    hero = window.KernelHeroes[variant].init(canvas, {
+  if(window.THREE && window.KernelHeroes && window.KernelHeroes.noyau){
+    hero = window.KernelHeroes.noyau.init(canvas, {
       mobile: innerWidth < 700,
       reduced: prefersReduced
     });
@@ -170,17 +165,63 @@
     document.querySelectorAll('.hero-title .ch').forEach(function(el){ el.style.transform = 'none'; });
     if(hero) hero.renderStatic();
   } else {
+    /* intro resserrée : le titre est visible dès ~0,3 s, la nav à ~1 s */
     var tl = gsap.timeline({defaults:{ease:'power3.out'}});
     if(hero){
       var introObj = {v:0};
-      tl.to(introObj, {v:1, duration:2.4, ease:'power2.inOut',
+      tl.to(introObj, {v:1, duration:1.8, ease:'power2.inOut',
         onUpdate:function(){ hero.setIntro(introObj.v); }}, 0);
     }
-    tl.to('#heroOverline', {opacity:1, duration:1}, 0.9)
-      .to('.hero-title .ch', {y:0, duration:1.1, stagger:0.06, ease:'power4.out'}, 1.1)
-      .to('#heroTagline', {opacity:1, duration:1.1}, 1.9)
-      .to('#heroCtas', {opacity:1, duration:1}, 2.2)
-      .to('#nav', {opacity:1, duration:1}, 2.4)
-      .to(['#heroScroll','#metaL','#metaR'], {opacity:1, duration:1}, 2.6);
+    tl.to('.hero-title .ch', {y:0, duration:0.9, stagger:0.045, ease:'power4.out'}, 0.3)
+      .to('#heroOverline', {opacity:1, duration:0.8}, 0.55)
+      .to('#heroTagline', {opacity:1, duration:0.9}, 0.75)
+      .to('#heroCtas', {opacity:1, duration:0.8}, 0.95)
+      .to('#nav', {opacity:1, duration:0.8}, 1.0)
+      .to(['#heroScroll','#metaL','#metaR'], {opacity:1, duration:0.8}, 1.15);
+  }
+
+  /* ============ Contact : copier l'adresse ============ */
+  var copyBtn = document.getElementById('copyBtn');
+  var mailText = document.getElementById('mailText');
+  if(copyBtn && mailText){
+    var copyDone = function(){
+      copyBtn.textContent = 'Copié';
+      copyBtn.classList.add('is-done');
+      setTimeout(function(){
+        copyBtn.textContent = 'Copier';
+        copyBtn.classList.remove('is-done');
+      }, 1800);
+    };
+    /* repli : sélectionne l'adresse (l'utilisateur n'a plus qu'à copier) */
+    var copyFallback = function(){
+      var sel = window.getSelection(), r = document.createRange();
+      r.selectNodeContents(mailText);
+      sel.removeAllRanges(); sel.addRange(r);
+      try{ if(document.execCommand('copy')) copyDone(); }catch(e){}
+    };
+    copyBtn.addEventListener('click', function(){
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(mailText.textContent).then(copyDone, copyFallback);
+      } else copyFallback();
+    });
+  }
+
+  /* ============ Footer : horloge locale (zéro requête) ============ */
+  var clockEl = document.getElementById('footerClock');
+  if(clockEl){
+    var tickClock = function(){
+      var hhmm;
+      try{
+        hhmm = new Date().toLocaleTimeString('fr-FR',
+          {timeZone:'Europe/Paris', hour:'2-digit', minute:'2-digit'});
+      }catch(e){
+        var d = new Date();
+        hhmm = ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
+      }
+      clockEl.textContent = 'Toulouse — ' + hhmm;
+      /* MàJ calée sur la minute suivante */
+      setTimeout(tickClock, 60000 - (Date.now() % 60000) + 500);
+    };
+    tickClock();
   }
 })();

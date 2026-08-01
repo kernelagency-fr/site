@@ -91,7 +91,7 @@ body.has-mouse .cursor-dot,body.has-mouse .cursor-ring{opacity:1}
 .overline--dark{color:var(--bio)}
 
 /* ---------- Hero ---------- */
-.hero{touch-action:pan-y pinch-zoom;position:relative;height:100vh;height:100svh;overflow:hidden}
+.hero{position:relative;height:100vh;height:100svh;overflow:hidden}
 #gl{position:absolute;inset:0;display:block;width:100%;height:100%}
 .gl-fallback{
   position:absolute;inset:0;display:none;

@@ -116,6 +116,7 @@
       uniforms: uniforms, vertexShader: vert, fragmentShader: frag,
       transparent: true, depthWrite: false, blending: THREE.NormalBlending
     });
+    var spinV = {x:0, y:0}, spinA = {x:0, y:0};
     var core = new THREE.Points(geo, mat);
     scene.add(core);
 
@@ -144,6 +145,13 @@
         fitCamera();
         renderer.setSize(window.innerWidth, window.innerHeight);
       },
+      spin: function(ix, iy){
+        /* impulsion trackball : dx du doigt -> rotation Y, dy -> rotation X */
+        spinV.y += ix; spinV.x += iy;
+        var m = 0.14; /* plafond de vitesse angulaire */
+        if(spinV.y >  m) spinV.y =  m; if(spinV.y < -m) spinV.y = -m;
+        if(spinV.x >  m) spinV.x =  m; if(spinV.x < -m) spinV.x = -m;
+      },
       setMouse: function(nx, ny){
         mouse.x = nx; mouse.y = ny;
         uniforms.uMouse.value.set(nx*1.4, ny*1.0, 0.9).normalize();
@@ -153,9 +161,11 @@
         /* auto-guérison : onglet chargé caché -> resynchroniser le canvas */
         if(canvas.width !== Math.floor(window.innerWidth*PR) && window.innerWidth > 0) api.resize();
         uniforms.uTime.value = t;
-        core.rotation.y = t*0.06 + mouse.x*0.25;
-        core.rotation.x = -mouse.y*0.18;
-        dust.rotation.y = t*0.012;
+        spinA.y += spinV.y; spinA.x += spinV.x;
+        spinV.y *= 0.955; spinV.x *= 0.955;   /* friction : l'élan s'éteint en douceur */
+        core.rotation.y = t*0.06 + mouse.x*0.25 + spinA.y;
+        core.rotation.x = -mouse.y*0.18 + spinA.x;
+        dust.rotation.y = t*0.012 + spinA.y*0.35;
         renderer.render(scene, camera);
       },
       renderStatic: function(){

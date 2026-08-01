@@ -108,7 +108,6 @@
 
     var geo = new THREE.IcosahedronGeometry(1, opts.mobile ? 32 : 48);
     var mat = new THREE.ShaderMaterial({uniforms:uni, vertexShader:vsh, fragmentShader:fsh});
-    var spinV = {x:0, y:0}, spinA = {x:0, y:0};
     var mesh = new THREE.Mesh(geo, mat);
     scene.add(mesh);
 
@@ -136,12 +135,6 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         fitScale();
       },
-      spin: function(ix, iy){
-        spinV.y += ix; spinV.x += iy;
-        var m = 0.12;
-        if(spinV.y >  m) spinV.y =  m; if(spinV.y < -m) spinV.y = -m;
-        if(spinV.x >  m) spinV.x =  m; if(spinV.x < -m) spinV.x = -m;
-      },
       setMouse: function(nx, ny){
         if(lastX !== null){
           speed = Math.min(1, Math.hypot(nx-lastX, ny-lastY)*6);
@@ -157,10 +150,8 @@
         bulgeTarget = .12 + speed*.22;
         uni.uBulge.value += (bulgeTarget - uni.uBulge.value)*.06;
         speed *= .96;
-        spinA.y += spinV.y; spinA.x += spinV.x;
-        spinV.y *= 0.955; spinV.x *= 0.955;
-        mesh.rotation.y = mouse.x*.45 + t*.05 + spinA.y;
-        mesh.rotation.x = -mouse.y*.35 + spinA.x;
+        mesh.rotation.y = mouse.x*.45 + t*.05;
+        mesh.rotation.x = -mouse.y*.35;
         renderer.render(scene, camera);
       },
       renderStatic: function(){

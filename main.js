@@ -100,22 +100,29 @@
     };
     document.addEventListener('touchstart', heroTouch, {passive:true});
     document.addEventListener('touchmove',  heroTouch, {passive:true});
-    /* trackball : chaque glissé donne de l'élan au noyau — la page défile
-       normalement en parallèle, aucun verrou, aucune zone grise */
-    var ptx = 0, pty = 0, pt0 = false;
-    document.addEventListener('touchstart', function(e){
-      var t = e.touches[0]; if(!t) return;
-      ptx = t.clientX; pty = t.clientY; pt0 = true;
-    }, {passive:true});
-    document.addEventListener('touchmove', function(e){
-      var t = e.touches[0]; if(!t || !pt0) return;
-      if(hero){
-        hero.spin((t.clientX - ptx)*0.00072, (t.clientY - pty)*0.00058);
-      }
-      ptx = t.clientX; pty = t.clientY;
-    }, {passive:true});
-    document.addEventListener('touchend',    function(){ pt0 = false; }, {passive:true});
-    document.addEventListener('touchcancel', function(){ pt0 = false; }, {passive:true});
+    /* verrou d'axe : au premier mouvement, le geste choisit son camp —
+       plutôt horizontal = jeu (l'écran ne bouge plus jusqu'au lever du doigt),
+       plutôt vertical = défilement natif intact */
+    var heroEl = document.getElementById('hero');
+    if(heroEl){
+      var tx0 = 0, ty0 = 0, axis = 0; /* 0 indécis · 1 jeu · 2 défilement */
+      heroEl.addEventListener('touchstart', function(e){
+        var t = e.touches[0]; if(!t) return;
+        tx0 = t.clientX; ty0 = t.clientY; axis = 0;
+      }, {passive:true});
+      heroEl.addEventListener('touchmove', function(e){
+        var t = e.touches[0]; if(!t) return;
+        if(axis === 0){
+          var dx = Math.abs(t.clientX - tx0), dy = Math.abs(t.clientY - ty0);
+          /* décision rapide (6px) : moins l'indécision dure, moins iOS a le temps
+             d'amorcer un défilement qu'on coupera — c'était la source des à-coups */
+          if(dx*dx + dy*dy > 36) axis = dx > dy*1.25 ? 1 : 2;
+        }
+        if(axis === 1) e.preventDefault();
+      }, {passive:false});
+      heroEl.addEventListener('touchend',    function(){ axis = 0; }, {passive:true});
+      heroEl.addEventListener('touchcancel', function(){ axis = 0; }, {passive:true});
+    }
   }
 
   if(hero){

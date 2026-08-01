@@ -11,8 +11,15 @@
   var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var hasHover = window.matchMedia('(hover:hover)').matches;
 
+  /* filet : si un reveal n'a pas été déclenché (JS partiel, viewport crawler),
+     tout devient visible au bout de 2,5 s — un contrôle qui refuse le contenu caché */
+  setTimeout(function(){
+    var h = document.querySelectorAll('.reveal:not(.in)');
+    for(var i=0;i<h.length;i++) h[i].classList.add('in');
+  }, 2500);
+
   /* ============ Titre : redécoupe du texte du h1 en lettres ============ */
-  var title = document.getElementById('heroTitle');
+  var title = document.getElementById('heroWordmark') || document.getElementById('heroTitle');
   var titleText = (title.textContent || '').trim() || 'KERNEL';
   title.textContent = '';
   titleText.split('').forEach(function(c){

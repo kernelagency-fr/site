@@ -1,0 +1,21 @@
+# Kernel Agency
+
+> Agence de solutions IA à Toulouse (France). Sites web, applications, logiciels métier
+> et automatisations IA pour indépendants et TPE. Fondée en juillet 2026 par Arthur Kulak.
+> SIREN 107666679. Contact : contact@kernelagency.fr
+
+## Ce que fait Kernel
+- Sites web : vitrines et boutiques sur mesure, sans template revendu, sans abonnement caché.
+- Applications : outils web métier (réservation, back-office, tableaux de bord).
+- Logiciels : systèmes métier complets sur mesure (facturation, stock, processus).
+- Automatisations IA : contenus, processus et agents qui travaillent en continu.
+
+## Ce qui distingue Kernel
+- Un interlocuteur unique : le fondateur cadre et garantit, l'IA produit à cadence d'équipe.
+- Le client est propriétaire du code, du domaine et des contenus ; site réversible et documenté.
+- Sites livrés sans cookie, sans tracker et sans requête externe ; hébergement possible à 0 €/mois.
+- Zone desservie : Toulouse, Haute-Garonne, Occitanie.
+
+## Pages
+- [Accueil](https://kernelagency.fr/) : offre, méthode, journal des réalisations, questions fréquentes.
+- [Mentions légales](https://kernelagency.fr/mentions-legales.html) : éditeur, SIREN, hébergeur, données personnelles.

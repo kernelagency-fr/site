@@ -28,3 +28,13 @@ jobs:
           if grep -rin --exclude-dir=.git "$M" .; then
             echo "ÉCHEC : nom de client détecté"; exit 1
           fi
+
+      - name: Notifier IndexNow (Bing, Yandex…)
+        run: |
+          sleep 90   # laisse GitHub Pages publier avant d'inviter les robots
+          curl -sS -X POST "https://api.indexnow.org/indexnow"             -H "Content-Type: application/json; charset=utf-8"             -d '{"host":"kernelagency.fr",
+                 "key":"1b26b9bee91499f7688f5ea971e6aa02",
+                 "keyLocation":"https://kernelagency.fr/1b26b9bee91499f7688f5ea971e6aa02.txt",
+                 "urlList":["https://kernelagency.fr/","https://kernelagency.fr/mentions-legales.html"]}'             -w "
+HTTP %{http_code}
+"

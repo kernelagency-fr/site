@@ -18,4 +18,8 @@
 
 ## Pages
 - [Accueil](https://kernelagency.fr/) : offre, méthode, journal des réalisations, questions fréquentes.
+- [Site sans cookie](https://kernelagency.fr/site-sans-cookie/) : pourquoi les sites chargent des trackers, ce que Kernel fait à la place, hébergement à 0 €/mois.
+- [Agence IA pour TPE à Toulouse](https://kernelagency.fr/agence-ia-tpe-toulouse/) : pour qui Kernel travaille, comment, et ce que l'IA change concrètement pour une entreprise de 1 à 10 personnes.
+- [Automatiser devis et facturation](https://kernelagency.fr/automatiser-devis-facturation/) : reprendre les heures perdues en administratif quand aucun logiciel du commerce ne colle au métier.
+- [Logiciel métier sur mesure](https://kernelagency.fr/logiciel-metier-sur-mesure/) : quand un outil du commerce ne suffit plus, et comment l'outil épouse le métier plutôt que l'inverse.
 - [Mentions légales](https://kernelagency.fr/mentions-legales.html) : éditeur, SIREN, hébergeur, données personnelles.

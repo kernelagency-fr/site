@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="msvalidate.01" content="D871AE8845C1F9635CD19370057D8843" />
+<meta name="google-site-verification" content="92nimvLsnvkvLxqnrUR5jkAnxb3qo-U3LfhdwWQDya8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logiciel métier sur mesure pour TPE — Kernel Agency</title>
+<meta name="description" content="Site, application, logiciel métier : ce qui les distingue, les signes qu’une TPE a dépassé le tableur, et comment ne pas dépendre de son prestataire.">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Kernel Agency">
+<meta property="og:title" content="Logiciel métier sur mesure pour TPE — Kernel Agency">
+<meta property="og:description" content="Un outil qui épouse votre métier au lieu de vous forcer à épouser le sien — et dont vous gardez le code, la documentation et la sortie de route.">
+<meta property="og:url" content="https://kernelagency.fr/logiciel-metier-sur-mesure/">
+<meta property="og:image" content="https://kernelagency.fr/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://kernelagency.fr/logiciel-metier-sur-mesure/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23211A38'/%3E%3Cpath%20d='M20%2014h9v16.2L42.4%2014H53L39.2%2030.6%2054%2050H43L32.6%2036 29%2040.2V50h-9z'%20fill='%23FF7A59'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Développement de logiciel métier sur mesure",
+  "serviceType": "Développement d’applications et de logiciels métier sur mesure pour indépendants et TPE",
+  "url": "https://kernelagency.fr/logiciel-metier-sur-mesure/",
+  "description": "Conception et développement d’outils métier taillés sur le fonctionnement réel de l’entreprise : suivi d’activité, planning, stock, dossiers clients. Le client reste propriétaire du code, de la documentation et de ses données.",
+  "provider": {
+    "@id": "https://kernelagency.fr/#kernel"
+  },
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Toulouse"
+    },
+    {
+      "@type": "AdministrativeArea",
+      "name": "Occitanie"
+    }
+  ],
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Indépendants et très petites entreprises"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://kernelagency.fr/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Logiciel métier sur mesure",
+      "item": "https://kernelagency.fr/logiciel-metier-sur-mesure/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Sur mesure ou logiciel du commerce : comment trancher ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "En regardant ce que vous faites déjà à côté de l’outil. Si vous vous en servez tel quel, gardez-le : un logiciel du commerce coûte moins cher qu’un développement et il est déjà écrit. Si vous maintenez un tableur parallèle pour corriger ce qu’il ne sait pas faire, c’est ce tableur qui décrit votre vrai besoin. Le sur mesure se justifie quand la partie que l’outil ne couvre pas est justement celle qui fait votre métier."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Que se passe-t-il si Kernel n’est plus là dans deux ans ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vous gardez tout, et vous pouvez le donner à quelqu’un d’autre. Le code source est déposé sur un dépôt à votre nom, le nom de domaine est enregistré au vôtre, la documentation d’installation est livrée avec, et les données restent exportables dans des formats ouverts. Un autre développeur peut reprendre la suite sans me demander quoi que ce soit. C’est la seule garantie qui vaut : celle qui ne dépend pas de ma bonne volonté."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Faut-il tout construire d’un coup ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non, et c’est plutôt mauvais signe quand on vous le propose. On commence par le geste que vous répétez le plus souvent, on le met en service, vous l’utilisez en vrai pendant quelques semaines. Ce que vous découvrez à l’usage change toujours la suite du plan. La validation se fait par étapes : chaque étape est utilisable seule, et vous décidez s’il y en a une suivante."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mes tableurs et mes anciennes données, on repart de zéro ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Vos tableurs sont la meilleure spécification disponible : ils montrent les colonnes que vous utilisez vraiment, les cas particuliers et les règles que personne n’a jamais écrites. On les lit d’abord, puis on reprend l’historique par import. L’objectif n’est pas de vous faire changer de méthode, c’est de retirer la ressaisie et les recopies entre outils."
+      }
+    }
+  ]
+}
+</script>
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="../styles.css?v=b24ad0c2">
+</head>
+<body class="doc-page">
+
+<nav class="nav" aria-label="Navigation principale">
+  <a class="nav-logo" href="../">KERNEL</a>
+  <div class="nav-links">
+    <a href="../#offre">Offre</a>
+    <a href="../#methode">Méthode</a>
+    <a href="../#contact">Contact</a>
+  </div>
+</nav>
+
+<main class="doc-main">
+
+  <nav class="doc-breadcrumb" aria-label="Fil d’Ariane">
+    <a href="../">Accueil</a>
+    <span aria-hidden="true">⁄</span>
+    <span class="doc-breadcrumb-current" aria-current="page">Logiciel métier sur mesure</span>
+  </nav>
+
+  <header class="doc-head">
+    <p class="overline">Quand un outil du commerce ne suffit plus</p>
+    <h1 class="doc-title">Logiciel métier sur mesure&#8239;: l’outil épouse votre métier, pas l’inverse</h1>
+    <p class="doc-lead">
+      Un site montre ce que vous faites. Un logiciel métier fait tourner ce que vous faites.
+      Quand les tableurs se multiplient, que trois outils se recopient à la main et que
+      personne ne sait plus quelle version fait foi, le problème n’est plus le site&#8239;:
+      <strong>c’est un outil qui manque.</strong> Kernel en construit — et vous en repartez
+      propriétaire, code compris.
+    </p>
+  </header>
+
+  <div class="doc-body">
+
+    <h2>Site, application, logiciel métier&#8239;: trois choses différentes</h2>
+    <p>
+      Les trois mots circulent comme des synonymes, y compris chez ceux qui les vendent. Ils
+      ne désignent pourtant pas le même objet, et surtout pas le même budget ni le même risque.
+    </p>
+
+    <h3>Le site&#8239;: il parle de vous</h3>
+    <p>
+      Des pages, un contenu, un formulaire de contact. Il travaille pour les gens qui ne vous
+      connaissent pas encore. Il ne stocke rien d’essentiel&#8239;: si le site disparaît une
+      nuit, vous perdez de la visibilité, pas votre activité.
+    </p>
+
+    <h3>L’application&#8239;: elle fait faire quelque chose</h3>
+    <p>
+      Un espace client, une prise de rendez-vous, un suivi de commande. Elle a des comptes, des
+      états, une base de données. Elle sert souvent vos clients autant que vous.
+    </p>
+
+    <h3>Le logiciel métier&#8239;: il fait tourner l’atelier</h3>
+    <p>
+      C’est l’outil que vous ouvrez le matin et qui reste ouvert. Il porte vos dossiers, votre
+      planning, votre stock, vos règles de calcul. Il est souvent invisible pour vos clients et
+      pourtant c’est lui le cœur&#8239;: <strong>s’il s’arrête, vous vous arrêtez.</strong>
+    </p>
+    <p class="doc-note">
+      La plupart des agences web font très bien la première ligne, parfois la deuxième, et
+      s’aventurent rarement sur la troisième. Ce n’est pas un défaut&#8239;: ce n’est
+      simplement pas le même travail. Un site se juge sur ce qu’il montre, un logiciel métier
+      sur ce qu’il tient dans le temps.
+    </p>
+
+    <h2>Les signaux que vous avez dépassé le tableur</h2>
+    <p>
+      Personne ne se réveille en décidant qu’il lui faut un logiciel. Ça s’installe lentement,
+      et ça se reconnaît à des symptômes concrets.
+    </p>
+    <ul>
+      <li>La même information est saisie <strong>deux fois ou plus</strong>&#8239;: dans le
+        tableur, dans le logiciel de facturation, dans un message.</li>
+      <li>Il existe un fichier «&#8239;final&#8239;», un «&#8239;final v2&#8239;» et un
+        «&#8239;final v2 corrigé&#8239;», et il faut demander lequel fait foi.</li>
+      <li>Une seule personne sait faire tourner la chose, et ses vacances sont un sujet.</li>
+      <li>Vous payez trois abonnements pour trois outils qui ne se parlent pas, et la liaison
+        entre eux, c’est vous.</li>
+      <li>Une erreur de manipulation dans une cellule peut fausser un devis sans que rien ne
+        vous alerte.</li>
+    </ul>
+    <p>
+      Un ou deux de ces signaux, ça se vit très bien. Quatre, et le tableur ne vous fait plus
+      gagner du temps&#8239;: il vous en prend, discrètement, tous les jours.
+    </p>
+
+    <h2>Ce que «&#8239;sur mesure&#8239;» veut dire concrètement</h2>
+    <p>
+      Sur mesure ne veut pas dire «&#8239;plus de fonctions&#8239;». Ça veut dire moins, mais
+      les bonnes. Un logiciel du commerce doit servir des milliers d’entreprises&#8239;: il
+      arrive donc avec quantité d’écrans qui ne vous concernent pas et, presque toujours, une
+      lacune sur ce qui fait votre spécificité.
+    </p>
+    <p>
+      Un outil taillé pour vous parle votre vocabulaire, pas celui d’un éditeur. Il reprend vos
+      étapes dans votre ordre. Il connaît vos cas particuliers — la remise que vous accordez
+      toujours à ce type de client, la tournée du jeudi, la pièce qu’il faut commander deux
+      semaines avant. <strong>Ces règles-là existent déjà&#8239;; elles sont dans votre tête
+      ou dans un coin de tableur.</strong> Le travail consiste à les écrire une fois pour
+      toutes dans un outil qui les applique.
+    </p>
+
+    <div class="doc-proof">
+      <p class="doc-proof-label">La méthode, étape par étape</p>
+      <ol>
+        <li>On observe le travail réel&#8239;: vos fichiers, vos exports, vos habitudes — <strong>pas un questionnaire</strong>.</li>
+        <li>On isole <strong>le geste le plus répété</strong> et on le traite en premier.</li>
+        <li>Vous utilisez cette première version en conditions réelles, avant d’aller plus loin.</li>
+        <li>Ce que l’usage révèle <strong>modifie la suite du plan</strong>, et vous décidez de la suite.</li>
+      </ol>
+    </div>
+
+    <h2>Le vrai risque du sur mesure&#8239;: dépendre de celui qui l’a écrit</h2>
+    <p>
+      Il faut le dire franchement, parce que c’est la mauvaise histoire que tout le monde
+      connaît. Une TPE fait développer son outil. Trois ans plus tard, le prestataire a changé
+      d’activité, ou il est devenu le seul à savoir comment ça marche. Le code est sur son
+      serveur, le domaine à son nom, aucune documentation n’existe, et chaque évolution passe
+      par lui. L’outil sur mesure est devenu une laisse.
+    </p>
+    <p>
+      Ce risque ne se neutralise pas par de la confiance, mais par des choses matérielles,
+      vérifiables le jour de la livraison.
+    </p>
+
+    <div class="commitments">
+      <p class="commitments-label">Ce qui vous appartient, par écrit</p>
+      <ul class="commitments-list">
+        <li>Le code source, sur un dépôt à votre nom</li>
+        <li>Le nom de domaine et les accès d’hébergement</li>
+        <li>La documentation d’installation et d’exploitation</li>
+        <li>Vos données, exportables en formats ouverts</li>
+      </ul>
+    </div>
+
+    <p>
+      Le test à faire passer à tout prestataire, moi compris&#8239;: «&#8239;si je
+      pars demain avec tout ce que vous m’avez livré, un autre développeur peut-il reprendre
+      la suite sans vous appeler&#8239;?&#8239;» Si la réponse est non, ce n’est pas un
+      logiciel sur mesure, c’est un abonnement déguisé. Kernel construit pour que la réponse
+      soit oui. Un client qui reste parce qu’il ne peut pas partir n’est pas une bonne
+      affaire — c’est juste une affaire qui finira mal.
+    </p>
+
+    <h2>Pourquoi ça devient accessible à une TPE</h2>
+    <p>
+      Le sur mesure a longtemps été réservé aux entreprises capables de payer plusieurs mois
+      de développement. Ce qui a changé, c’est la vitesse de production du code. Chez Kernel,
+      le modèle est explicite&#8239;: <strong>le fondateur cadre et garantit, l’IA
+      produit.</strong> Le cadrage, les décisions techniques, la relecture et la
+      responsabilité restent humaines&#8239;; la frappe, les variantes et les tâches répétitives
+      ne le sont plus.
+    </p>
+    <p>
+      Ce n’est pas une promesse de brochure&#8239;: c’est la méthode de l’outil interne de
+      Kernel, un e-commerce piloté par des agents, celle des
+      <a href="../automatiser-devis-facturation/">automatisations administratives</a> livrées
+      aux clients, et celle du premier site client mis en production — une TPE du secteur
+      animalier.
+    </p>
+    <p class="doc-note">
+      Une précision d’honnêteté&#8239;: tout ne mérite pas d’être développé. Si un outil
+      existant fait le travail, je vous le dirai, et le devis sera nettement plus court. Le
+      sur mesure n’a de sens que là où votre différence se joue.
+    </p>
+
+    <h2>Questions fréquentes</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Sur mesure ou logiciel du commerce&#8239;: comment trancher&#8239;?</summary>
+        <p>
+          En regardant ce que vous faites déjà à côté de l’outil. Si vous vous en servez tel
+          quel, gardez-le&#8239;: un logiciel du commerce coûte moins cher qu’un développement
+          et il est déjà écrit. Si vous maintenez un tableur parallèle pour corriger ce qu’il
+          ne sait pas faire, c’est ce tableur qui décrit votre vrai besoin. Le sur mesure se
+          justifie quand la partie que l’outil ne couvre pas est justement celle qui fait
+          votre métier.
+        </p>
+      </details>
+      <details class="faq-item">
+        <summary>Que se passe-t-il si Kernel n’est plus là dans deux ans&#8239;?</summary>
+        <p>
+          Vous gardez tout, et vous pouvez le donner à quelqu’un d’autre. Le code source est
+          déposé sur un dépôt à votre nom, le nom de domaine est enregistré au vôtre, la
+          documentation d’installation est livrée avec, et les données restent exportables
+          dans des formats ouverts. Un autre développeur peut reprendre la suite sans me
+          demander quoi que ce soit. C’est la seule garantie qui vaut&#8239;: celle qui ne
+          dépend pas de ma bonne volonté.
+        </p>
+      </details>
+      <details class="faq-item">
+        <summary>Faut-il tout construire d’un coup&#8239;?</summary>
+        <p>
+          Non, et c’est plutôt mauvais signe quand on vous le propose. On commence par le
+          geste que vous répétez le plus souvent, on le met en service, vous l’utilisez en
+          vrai pendant quelques semaines. Ce que vous découvrez à l’usage change toujours la
+          suite du plan. La validation se fait par étapes&#8239;: chaque étape est utilisable
+          seule, et vous décidez s’il y en a une suivante.
+        </p>
+      </details>
+      <details class="faq-item">
+        <summary>Mes tableurs et mes anciennes données, on repart de zéro&#8239;?</summary>
+        <p>
+          Non. Vos tableurs sont la meilleure spécification disponible&#8239;: ils montrent
+          les colonnes que vous utilisez vraiment, les cas particuliers et les règles que
+          personne n’a jamais écrites. On les lit d’abord, puis on reprend l’historique par
+          import. L’objectif n’est pas de vous faire changer de méthode, c’est de retirer la
+          ressaisie et les recopies entre outils.
+        </p>
+      </details>
+    </div>
+
+  </div>
+
+  <nav class="doc-related" aria-labelledby="doc-related-title">
+    <p class="commitments-label" id="doc-related-title">À lire ensuite</p>
+    <ul class="doc-related-list">
+      <li><a href="../automatiser-devis-facturation/">Automatiser devis et facturation<em>Reprendre les heures perdues en administratif</em></a></li>
+      <li><a href="../agence-ia-tpe-toulouse/">Agence IA pour TPE à Toulouse<em>Comment Kernel travaille, et pour qui</em></a></li>
+      <li><a href="../site-sans-cookie/">Site web sans cookie ni tracker<em>Pas de bandeau, pas de zone grise</em></a></li>
+      <li><a href="../">Retour à l’accueil<em>L’offre complète, la méthode, le journal</em></a></li>
+    </ul>
+  </nav>
+
+</main>
+
+<section class="doc-cta" aria-labelledby="doc-cta-title">
+  <div class="doc-cta-inner">
+    <h2 id="doc-cta-title">Votre tableur a fait son temps&#8239;?</h2>
+    <p>
+      Dites-moi en deux lignes ce que vous faites et ce dont vous avez besoin. Premier échange
+      gratuit, sans engagement, puis un devis clair. Vous parlerez à Arthur Kulak, fondateur — Toulouse.
+    </p>
+    <a class="btn" href="mailto:contact@kernelagency.fr?subject=Projet%20%E2%80%94%20premier%20%C3%A9change&amp;body=Bonjour%20Arthur%2C%0D%0A%0D%0AMon%20activit%C3%A9%20%3A%20%0D%0AMon%20besoin%20%3A%20site%20%C2%B7%20application%20%C2%B7%20logiciel%20%C2%B7%20automatisation%0D%0AMon%20d%C3%A9lai%20%3A%20%0D%0A"><span class="btn-fill"></span><span>Démarrer un projet</span></a>
+    <p class="doc-cta-mail mono">contact@kernelagency.fr</p>
+  </div>
+</section>
+
+<footer>
+  <span>Kernel Agency <span class="dot">●</span> Toulouse</span>
+  <span class="footer-sign">Conçu et développé à Toulouse par Kernel — 0 cookie, 0 tracker, 0 requête externe.</span>
+  <a class="footer-legal" href="../mentions-legales.html">Mentions légales</a>
+</footer>
+
+</body>
+</html>

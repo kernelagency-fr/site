@@ -29,6 +29,45 @@ jobs:
             echo "ÉCHEC : nom de client détecté"; exit 1
           fi
 
+      # Politique commerciale : aucun prix affiché sur le site, tout passe par devis.
+      # Seule exception, factuelle et vérifiable : « 0 €/mois » (coût d'hébergement).
+      - name: Aucun prix affiché (hors « 0 €/mois »)
+        run: |
+          ECHEC=0
+          for f in $(find . -name '*.html' -not -path './.git/*' -not -path './vendor/*'); do
+            # 1. les espaces insécables encodés redeviennent des espaces
+            # 2. la seule mention autorisée est retirée avant la recherche.
+            #    Le « 0 » doit être précédé d'un non-chiffre (ou d'un début de ligne),
+            #    sinon « 900 €/mois » passerait par la porte ouverte pour « 0 €/mois ».
+            HITS=$(sed -e 's/&#8239;/ /g; s/&#x202F;/ /g; s/&nbsp;/ /g; s/&#160;/ /g' "$f" \
+                   | sed -e 's/^0 *€\/mois//g; s/\([^0-9]\)0 *€\/mois/\1/g' \
+                   | grep -nE '[0-9]+ *€' || true)
+            if [ -n "$HITS" ]; then
+              echo "ÉCHEC : prix en euros détecté dans $f"
+              echo "$HITS"
+              ECHEC=1
+            fi
+          done
+          [ "$ECHEC" -eq 0 ] || exit 1
+
+      - name: Chaque page de service a un h1 et une canonical
+        run: |
+          ECHEC=0
+          for p in site-sans-cookie agence-ia-tpe-toulouse automatiser-devis-facturation logiciel-metier-sur-mesure; do
+            F="$p/index.html"
+            if [ ! -f "$F" ]; then
+              echo "ÉCHEC : $F est introuvable"; ECHEC=1; continue
+            fi
+            N=$(grep -c '<h1' "$F" || true)
+            if [ "$N" -ne 1 ]; then
+              echo "ÉCHEC : $F contient $N balise(s) h1, il en faut exactement 1"; ECHEC=1
+            fi
+            if ! grep -q "rel=\"canonical\" href=\"https://kernelagency.fr/$p/\"" "$F"; then
+              echo "ÉCHEC : $F n'a pas de canonical vers https://kernelagency.fr/$p/"; ECHEC=1
+            fi
+          done
+          [ "$ECHEC" -eq 0 ] || exit 1
+
   # Prévient les moteurs dès que la nouvelle version est en ligne.
   # Job séparé : une notification ratée ne doit jamais faire échouer les vérifications.
   indexnow:
@@ -41,7 +80,7 @@ jobs:
           KEY: 1b26b9bee91499f7688f5ea971e6aa02
         run: |
           sleep 90   # laisse GitHub Pages publier avant d'inviter les robots
-          BODY=$(printf '{"host":"kernelagency.fr","key":"%s","keyLocation":"https://kernelagency.fr/%s.txt","urlList":["https://kernelagency.fr/","https://kernelagency.fr/mentions-legales.html"]}' "$KEY" "$KEY")
+          BODY=$(printf '{"host":"kernelagency.fr","key":"%s","keyLocation":"https://kernelagency.fr/%s.txt","urlList":["https://kernelagency.fr/","https://kernelagency.fr/site-sans-cookie/","https://kernelagency.fr/agence-ia-tpe-toulouse/","https://kernelagency.fr/automatiser-devis-facturation/","https://kernelagency.fr/logiciel-metier-sur-mesure/","https://kernelagency.fr/mentions-legales.html"]}' "$KEY" "$KEY")
           CODE=$(curl -sS -o /dev/null -w '%{http_code}' -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" -d "$BODY")
           echo "IndexNow a répondu : HTTP $CODE"

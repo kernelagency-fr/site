@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="msvalidate.01" content="D871AE8845C1F9635CD19370057D8843" />
+<meta name="google-site-verification" content="92nimvLsnvkvLxqnrUR5jkAnxb3qo-U3LfhdwWQDya8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site web sans cookie ni tracker — Kernel Agency</title>
+<meta name="description" content="Un site sans cookie, sans tracker et sans requête externe : plus de bandeau à afficher, des pages plus rapides, un hébergement possible à 0 €/mois.">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Kernel Agency">
+<meta property="og:title" content="Site web sans cookie ni tracker — Kernel Agency">
+<meta property="og:description" content="Pourquoi la plupart des sites chargent des trackers sans le dire, ce que ça implique, et comment Kernel construit des sites sans bandeau cookies.">
+<meta property="og:url" content="https://kernelagency.fr/site-sans-cookie/">
+<meta property="og:image" content="https://kernelagency.fr/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://kernelagency.fr/site-sans-cookie/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23211A38'/%3E%3Cpath%20d='M20%2014h9v16.2L42.4%2014H53L39.2%2030.6%2054%2050H43L32.6%2036 29%2040.2V50h-9z'%20fill='%23FF7A59'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Création de site web sans cookie ni tracker",
+  "serviceType": "Création de site internet sans cookie, sans tracker et conforme RGPD",
+  "url": "https://kernelagency.fr/site-sans-cookie/",
+  "description": "Conception de sites web qui ne chargent aucune ressource tierce : polices auto-hébergées, aucune analytique tierce, hébergement statique. Aucun bandeau cookies à afficher.",
+  "provider": {
+    "@id": "https://kernelagency.fr/#kernel"
+  },
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Toulouse"
+    },
+    {
+      "@type": "AdministrativeArea",
+      "name": "Occitanie"
+    }
+  ],
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Indépendants et très petites entreprises"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://kernelagency.fr/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Site sans cookie",
+      "item": "https://kernelagency.fr/site-sans-cookie/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Un site sans cookie, c’est vraiment possible ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pour un site vitrine, oui, et sans rien sacrifier. Un site vitrine n’a besoin d’aucun cookie pour fonctionner. Certaines fonctions en demandent un — un panier, un espace client, un formulaire protégé contre les envois automatisés. Ces cookies-là sont strictement nécessaires au service demandé par le visiteur, donc exemptés de consentement : ils n’imposent pas de bandeau."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment mesurer mon audience sans Google Analytics ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "En comptant les visites côté serveur, sans identifiant déposé sur le terminal du visiteur. Vous savez combien de personnes sont venues et par quelles pages, pas qui elles sont. La première question reste : qu’est-ce que vous feriez de ces chiffres ? Sur beaucoup de sites vitrine, le tableau de bord n’est jamais ouvert. C’est un choix à faire au cadrage, pas un réglage par défaut."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Et si j’ai besoin d’une carte, d’un agenda de réservation ou d’une vidéo ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Trois cas. Certaines briques ont un équivalent auto-hébergé — une carte, un lecteur vidéo, un formulaire. D’autres peuvent être remplacées par un lien sortant plutôt qu’un contenu intégré. Et parfois l’outil tiers est vraiment le bon choix : on l’intègre alors en connaissance de cause, en sachant qu’il faudra un bandeau. La différence est que c’est une décision prise, pas un défaut d’usine."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mon site actuel a un bandeau cookies. Vous pouvez l’enlever ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ça commence par un inventaire de ce que votre site charge réellement, page par page. Très souvent, une partie des trackers n’est utilisée par personne et peut simplement disparaître. Les polices se rapatrient sur votre domaine. Ce qui reste, on décide quoi en faire. Si à la fin il ne reste ni cookie ni tracker, le bandeau n’a plus de raison d’être."
+      }
+    }
+  ]
+}
+</script>
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="../styles.css?v=b24ad0c2">
+</head>
+<body class="doc-page">
+
+<nav class="nav" aria-label="Navigation principale">
+  <a class="nav-logo" href="../">KERNEL</a>
+  <div class="nav-links">
+    <a href="../#offre">Offre</a>
+    <a href="../#methode">Méthode</a>
+    <a href="../#contact">Contact</a>
+  </div>
+</nav>
+
+<main class="doc-main">
+
+  <nav class="doc-breadcrumb" aria-label="Fil d’Ariane">
+    <a href="../">Accueil</a>
+    <span aria-hidden="true">⁄</span>
+    <span class="doc-breadcrumb-current" aria-current="page">Site sans cookie</span>
+  </nav>
+
+  <header class="doc-head">
+    <p class="overline">Ce que Kernel fait autrement</p>
+    <h1 class="doc-title">Un site web sans cookie ni tracker&#8239;: pas de bandeau, pas de zone grise, des pages plus rapides</h1>
+    <p class="doc-lead">
+      La plupart des sites chargent des polices, des statistiques et des bibliothèques depuis
+      des serveurs qui ne leur appartiennent pas. Kernel construit des sites qui ne chargent
+      rien de tout ça. <strong>Aucun bandeau cookies à afficher, aucune donnée de vos visiteurs
+      envoyée à un tiers, une page qui s’affiche plus vite.</strong>
+      Celui que vous lisez en ce moment en est la démonstration.
+    </p>
+  </header>
+
+  <div class="doc-body">
+
+    <h2>Le site que vous lisez est la preuve</h2>
+    <p>
+      Inutile de me croire sur parole. Cette page est vérifiable en quinze secondes, depuis
+      votre propre navigateur, sans rien installer.
+    </p>
+
+    <div class="doc-proof">
+      <p class="doc-proof-label">Vérifier vous-même</p>
+      <ol>
+        <li>Appuyez sur <strong>F12</strong> pour ouvrir les outils de développement.</li>
+        <li>Onglet <strong>Réseau</strong>, puis rechargez la page.</li>
+        <li>Regardez la colonne des domaines&#8239;: tout part de <strong>kernelagency.fr</strong>. Aucune autre adresse n’apparaît.</li>
+        <li>Onglet <strong>Application</strong> (ou <strong>Stockage</strong>) → <strong>Cookies</strong>&#8239;: la liste est vide.</li>
+      </ol>
+    </div>
+
+    <p>
+      C’est pour cette raison qu’aucun bandeau ne vous a interrompu en arrivant. Il n’y a rien
+      à faire accepter. La même exigence s’applique aux sites que Kernel livre&#8239;— y compris
+      le premier site client mis en production, une TPE du secteur animalier.
+    </p>
+
+    <h2>Pourquoi presque tous les sites chargent des trackers sans le dire</h2>
+    <p>
+      Ce n’est presque jamais un choix assumé, c’est un défaut d’usine. Trois habitudes de
+      fabrication expliquent l’essentiel.
+    </p>
+
+    <h3>Les polices appelées chez Google</h3>
+    <p>
+      Deux lignes à copier-coller, et la typographie est réglée. Sauf que chaque visiteur,
+      sur chaque page, demande le fichier de police au serveur de Google — et une requête
+      transmet forcément l’adresse IP de celui qui la fait. Le visiteur n’a rien accepté.
+      L’éditeur du site, la plupart du temps, ignore que ça se produit.
+    </p>
+
+    <h3>La mesure d’audience par réflexe</h3>
+    <p>
+      Google Analytics est installé avant même qu’on sache quoi en faire. Sur beaucoup de
+      sites vitrine d’indépendants, personne n’ouvre jamais le tableau de bord. L’outil reste
+      là, dépose ses cookies, et impose le bandeau de consentement qui va avec.
+    </p>
+
+    <h3>Les briques chargées à distance</h3>
+    <p>
+      Une bibliothèque JavaScript servie par un réseau de diffusion tiers, une police d’icônes,
+      un widget de réservation, une carte interactive&#8239;: chacun ajoute un serveur de plus
+      dans la chaîne. Chacun voit passer vos visiteurs. Et chacun peut ralentir votre site,
+      ou le casser, le jour où il tombe.
+    </p>
+
+    <h2>Ce que dit la CNIL, et ce qu’elle ne dit pas</h2>
+    <p>Trois repères, donnés tels quels.</p>
+    <ul>
+      <li>
+        En février 2022, la CNIL a mis en demeure des gestionnaires de sites utilisant
+        Google&#8239;Analytics, estimant que les transferts de données vers les États-Unis
+        n’étaient pas suffisamment encadrés. Le cadre juridique des transferts a évolué
+        depuis, et le sujet reste discuté.
+      </li>
+      <li>
+        Sur les polices, la décision la plus citée n’est pas française&#8239;: en janvier 2022,
+        un tribunal allemand a condamné l’éditeur d’un site à indemniser un visiteur dont
+        l’adresse IP avait été transmise à Google via Google&#8239;Fonts. Elle ne s’applique
+        pas directement en France, mais elle a mis le sujet sur la table.
+      </li>
+      <li>
+        Sur le bandeau, la règle est plus simple qu’on ne le croit&#8239;: le consentement est
+        exigé pour lire ou écrire des informations sur le terminal du visiteur — cookies et
+        équivalents — hors de ce qui est strictement nécessaire au service qu’il a demandé.
+      </li>
+    </ul>
+    <p class="doc-note">
+      Je ne suis pas juriste et ceci n’est pas un conseil juridique. C’est précisément
+      pourquoi Kernel prend la voie qui ne demande aucune interprétation&#8239;: ne rien
+      déposer, ne rien charger ailleurs, ne rien mesurer chez un tiers. Un site sans cookie
+      et sans tracker n’a pas de zone grise à défendre.
+    </p>
+
+    <h2>Ce que Kernel fait à la place</h2>
+
+    <h3>Les polices sont hébergées avec le site</h3>
+    <p>
+      Les deux polices de ce site sont téléchargées une fois, converties au bon format,
+      réduites au jeu de caractères utile, et servies depuis le même domaine que les pages.
+      Le navigateur du visiteur ne parle qu’à un seul serveur&#8239;: le vôtre. Le rendu est
+      identique, le chargement est même plus rapide — une connexion de moins à ouvrir.
+    </p>
+
+    <h3>Aucune analytique tierce</h3>
+    <p>
+      Pas de Google Analytics, pas de pixel publicitaire, pas de carte de chaleur. Si vous
+      voulez mesurer votre fréquentation, c’est possible sans cookie&#8239;: on compte les
+      visites côté serveur, sans rien déposer sur le terminal. Vous savez combien de
+      personnes sont venues et par où, pas qui elles sont. Et surtout&#8239;: on décide au
+      cadrage si vous en avez réellement besoin, au lieu de l’installer par défaut.
+    </p>
+
+    <h3>Un hébergement statique</h3>
+    <p>
+      Un site vitrine n’a besoin ni de base de données ni de serveur qui recalcule la page à
+      chaque visite. Des fichiers, servis tels quels. Moins de choses à maintenir, moins de
+      surface d’attaque, pas de mise à jour de sécurité mensuelle à surveiller — et un
+      hébergement qui peut tourner à <strong>0&#8239;€/mois</strong>, comme celui-ci.
+      C’est aussi pour ça que Kernel peut travailler sans vous vendre d’abonnement caché.
+    </p>
+
+    <h2>Ce que vous y gagnez, concrètement</h2>
+    <div class="commitments">
+      <p class="commitments-label">Le bilan côté client</p>
+      <ul class="commitments-list">
+        <li>Aucun bandeau cookies&#8239;: plus rien ne s’interpose entre le visiteur et votre page</li>
+        <li>Aucune donnée de vos visiteurs transmise à un tiers, en France ou ailleurs</li>
+        <li>Des pages plus légères, donc plus rapides — y compris en 4G dans un couloir</li>
+        <li>Un hébergement qui peut tourner à 0&#8239;€/mois, sans abonnement caché</li>
+      </ul>
+    </div>
+    <p>
+      Et un argument que vous pouvez afficher. «&#8239;Ce site ne vous piste pas&#8239;» est
+      une phrase que très peu de vos concurrents peuvent écrire honnêtement — et que
+      n’importe qui peut vérifier en quinze secondes.
+    </p>
+
+    <h2>Questions fréquentes</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Un site sans cookie, c’est vraiment possible&#8239;?</summary>
+        <p>
+          Pour un site vitrine, oui, et sans rien sacrifier&#8239;: il n’a besoin d’aucun
+          cookie pour fonctionner. Certaines fonctions en demandent un — un panier, un espace
+          client, un formulaire protégé contre les envois automatisés. Ces cookies-là sont
+          strictement nécessaires au service demandé par le visiteur, donc exemptés de
+          consentement&#8239;: ils n’imposent pas de bandeau.
+        </p>
+      </details>
+      <details class="faq-item">
+        <summary>Comment mesurer mon audience sans Google Analytics&#8239;?</summary>
+        <p>
+          En comptant les visites côté serveur, sans identifiant déposé sur le terminal du
+          visiteur. Vous savez combien de personnes sont venues et par quelles pages, pas qui
+          elles sont. La première question reste&#8239;: qu’est-ce que vous feriez de ces
+          chiffres&#8239;? Sur beaucoup de sites vitrine, le tableau de bord n’est jamais
+          ouvert. C’est un choix à faire au cadrage, pas un réglage par défaut.
+        </p>
+      </details>
+      <details class="faq-item">
+        <summary>Et si j’ai besoin d’une carte, d’un agenda de réservation ou d’une vidéo&#8239;?</summary>
+        <p>
+          Trois cas. Certaines briques ont un équivalent auto-hébergé — une carte, un lecteur
+          vidéo, un formulaire. D’autres peuvent être remplacées par un lien sortant plutôt
+          qu’un contenu intégré. Et parfois l’outil tiers est vraiment le bon choix&#8239;: on
+          l’intègre alors en connaissance de cause, en sachant qu’il faudra un bandeau. La
+          différence, c’est que ça devient une décision prise, pas un défaut d’usine.
+        </p>
+      </details>
+      <details class="faq-item">
+        <summary>Mon site actuel a un bandeau cookies. Vous pouvez l’enlever&#8239;?</summary>
+        <p>
+          Ça commence par un inventaire de ce que votre site charge réellement, page par page.
+          Très souvent, une partie des trackers n’est utilisée par personne et peut simplement
+          disparaître. Les polices se rapatrient sur votre domaine. Ce qui reste, on décide
+          quoi en faire ensemble. S’il ne reste à la fin ni cookie ni tracker, le bandeau n’a
+          plus de raison d’être.
+        </p>
+      </details>
+    </div>
+
+  </div>
+
+  <nav class="doc-related" aria-labelledby="doc-related-title">
+    <p class="commitments-label" id="doc-related-title">À lire ensuite</p>
+    <ul class="doc-related-list">
+      <li><a href="../agence-ia-tpe-toulouse/">Agence IA pour TPE à Toulouse<em>Comment Kernel travaille, et pour qui</em></a></li>
+      <li><a href="../automatiser-devis-facturation/">Automatiser devis et facturation<em>Reprendre les heures perdues en administratif</em></a></li>
+      <li><a href="../logiciel-metier-sur-mesure/">Logiciel métier sur mesure<em>Quand un outil du commerce ne suffit plus</em></a></li>
+      <li><a href="../">Retour à l’accueil<em>L’offre complète, la méthode, le journal</em></a></li>
+    </ul>
+  </nav>
+
+</main>
+
+<section class="doc-cta" aria-labelledby="doc-cta-title">
+  <div class="doc-cta-inner">
+    <h2 id="doc-cta-title">Un site qui ne piste personne&#8239;?</h2>
+    <p>
+      Dites-moi en deux lignes ce que vous faites et ce dont vous avez besoin. Premier échange
+      gratuit, sans engagement, puis un devis clair. Vous parlerez à Arthur Kulak, fondateur — Toulouse.
+    </p>
+    <a class="btn" href="mailto:contact@kernelagency.fr?subject=Projet%20%E2%80%94%20premier%20%C3%A9change&amp;body=Bonjour%20Arthur%2C%0D%0A%0D%0AMon%20activit%C3%A9%20%3A%20%0D%0AMon%20besoin%20%3A%20site%20%C2%B7%20application%20%C2%B7%20logiciel%20%C2%B7%20automatisation%0D%0AMon%20d%C3%A9lai%20%3A%20%0D%0A"><span class="btn-fill"></span><span>Démarrer un projet</span></a>
+    <p class="doc-cta-mail mono">contact@kernelagency.fr</p>
+  </div>
+</section>
+
+<footer>
+  <span>Kernel Agency <span class="dot">●</span> Toulouse</span>
+  <span class="footer-sign">Conçu et développé à Toulouse par Kernel — 0 cookie, 0 tracker, 0 requête externe.</span>
+  <a class="footer-legal" href="../mentions-legales.html">Mentions légales</a>
+</footer>
+
+</body>
+</html>
